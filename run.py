@@ -54,7 +54,7 @@ def place_ship():
 
 def player_move():
     '''
-    Takes in the target coordinates, checks the enemy grid for a hit or miss, then prints output and updates the grid cell.
+    Takes in the target coordinates, checks the player grid for a hit or miss, then prints output and updates the grid cell.
     '''
     print("Enter row and column to strike: ")
 
@@ -74,3 +74,8 @@ def player_move():
     else:
         print("BOOOM, you got a HIT!!!")
         enemy_grid[row][col] = 'X'
+
+def enemy_move():
+    '''
+    Takes in the target coordinates, checks the enemy grid for a hit or miss, then prints output and updates the grid cell.
+    '''
