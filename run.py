@@ -51,3 +51,26 @@ def place_ship():
             placed = place_ship(ship, size, grid)
         if placed:
             break
+
+def player_move():
+    '''
+    Takes in the target coordinates, checks the enemy grid for a hit or miss, then prints output and updates the grid cell.
+    '''
+    print("Enter row and column to strike: ")
+
+    row, col = input().split()
+    row, col = int(row), int(col)
+
+    mark = enemy_grid[row][col]
+
+    if mark == 'X' or mark == '-':
+        print("You already struck here!")
+        return
+    
+    if mark == '-':
+        print("Arhh, you Missed!")
+        enemy_grid[row][col] = '-'
+        
+    else:
+        print("BOOOM, you got a HIT!!!")
+        enemy_grid[row][col] = 'X'
