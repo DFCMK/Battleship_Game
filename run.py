@@ -6,11 +6,11 @@ class Battleship:
     """
     Initialize the game with a grid of a given size as Gameboard with a number of ships, and a number of bullets.
     """
-       self.grid_size = grid_size
-       self.num_of_ships = num_of_ships
-       self.bullets = bullets
-       self.grid = [['.' for _ in range(grid_size)] for _ in range(grid_size)]
-       self.ship_positions = []
-       self.alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-       self.create_grid()
+    self.grid_size = grid_size
+    self.num_of_ships = num_of_ships
+    self.bullets = bullets
+    self.grid = [['.' for _ in range(grid_size)] for _ in range(grid_size)]
+    self.ship_positions = []
+    self.alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    self.create_grid()
 
