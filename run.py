@@ -1,6 +1,6 @@
 import random
 
-grid = [["."] for in _ range(10)]
+grid = [["."] * 10 for row in range(10)]
 
 GRID_SIZE = 10
 SHIPS = {"Destroyer": 2, "Submarine": 3, "Battleship": 4}
@@ -11,13 +11,13 @@ def random_row():
     '''
     generate a random starting point for each ship.
     '''
-    return random.randint(0, GRID_SIZE, -1)
+    return random.randint(0, GRID_SIZE)
 
 def random_col():
     '''
     generate a random starting point for each ship.
     '''
-    return random.randint(0, GRID_SIZE, -1)
+    return random.randint(0, GRID_SIZE)
 
 def place_ship():
     '''
@@ -32,23 +32,25 @@ def place_ship():
 
     if is_vertical:
         for i in range(size):
-            if row + i >= GRID_SIZE:
+            if row + i < GRID_SIZE:
+                if col + i < GRID_SIZE:
+                    grid[row + i][col + i] = ship[0]
+                else:
+                    return False
+            else:
                 return False
-                
-            grid[row + i][col] = ship[0]
     else:
         for i in range(size):
             if col + i > GRID_SIZE:
+                grid[row][col + i] = ship[0]
+            else:
                 return False
-
-    
-            grid[row][col + i] = ship[0]
-
+                
     return True
 
 for ship, size in SHIPS.items():
     while True:
-        placed = place_ship(ship, size, grid)
+        placed = place_ship()
         if placed:
             break
 
@@ -80,7 +82,7 @@ def enemy_move():
     Takes in the target coordinates, checks the player grid for a hit or miss, then prints output and updates the grid cell.
     '''
     # Initial move selection loop:
-    while True: 
+while True: 
     row, col = random_row(), random_col()
     
     if player_grid[row][col] == 'X' or player_grid[row][col] == 'M':
