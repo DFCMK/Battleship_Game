@@ -104,9 +104,17 @@ def enemy_move():
         if player_grid[row][col] == 'M':
             break
 
+def print_grid(grid):
+    '''
+    Display current state of the grid to the player
+    '''
+    for row in grid:
+        print(' '.join(row))
+
 def main():
     random_row()
     random_col()
     place_ship()
     player_move()
     enemy_move()
+main()
