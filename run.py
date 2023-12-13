@@ -112,8 +112,6 @@ def print_grid(grid):
         print(' '.join(row))
 
 def main():
-    random_row()
-    random_col()
     place_ship()
     player_move()
     enemy_move()
