@@ -21,7 +21,7 @@ def random_col():
     '''
     return random.randint(0, GRID_SIZE)
 
-def place_ship(grid):
+def place_ship(grid, ship):
     '''
     Handle positioning of a single ship.
     '''
@@ -52,7 +52,7 @@ def place_ship(grid):
 
 for ship, size in SHIPS.items():
     while True:
-        placed = place_ship(grid)
+        placed = place_ship(grid, ship)
         if placed:
             break
 
@@ -85,34 +85,29 @@ def player_move():
         print("BOOOM, you got a HIT!!!")
         enemy_grid[row][col] = 'X'
 
+    # print player's grid
+    print_grid(player_grid)
+
+
+
 def enemy_move():
     '''
     Takes in the target coordinates, checks the player grid for a hit or miss, then prints output and updates the grid cell.
     '''
-    # Initial move selection loop:
-while True: 
-    row, col = random_row(), random_col()
     
-    if player_grid[row][col] == 'X' or player_grid[row][col] == 'M':
-        continue
-    else:
-        break
-        
-    mark = player_grid[row][col]
-
-    player_grid[row][col] = 'X'
+    ships_remaining = sum(SHIPS.values())
     
     # Gameplay loop:
-    while True:
+    while ships_remaining > 0:
         print_grid(enemy_grid)
         player_move()
         print_grid(enemy_grid)
         
+        if player_grid[row][col] == 'X':
+            ships_remaining -= 1
+            
         print_grid(player_grid)
         enemy_move()
-
-        if player_grid[row][col] == 'M':
-            break
 
 def print_grid(grid):
     '''
@@ -122,8 +117,8 @@ def print_grid(grid):
         print(' '.join(row))
 
 def main():
-    place_ship(player_grid)
-    place_ship(enemy_grid)
+    place_ship(player_grid, ship)
+    place_ship(enemy_grid, ship)
     player_move()
     enemy_move()
 main()
