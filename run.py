@@ -79,28 +79,30 @@ def enemy_move():
     '''
     Takes in the target coordinates, checks the player grid for a hit or miss, then prints output and updates the grid cell.
     '''
-
-    row, col = input().split()
-    row, col = int(row), int(col)
-
+    # Initial move selection loop:
+    while True: 
+    row, col = random_row(), random_col()
+    
+    if player_grid[row][col] == 'X' or player_grid[row][col] == 'M':
+        continue
+    else:
+        break
+        
     mark = player_grid[row][col]
 
-    if mark == 'X' or mark == 'M':
-        return
+    player_grid[row][col] = 'X'
     
-    if mark == 'M':
-        print("Enemy Missed!")
-        player_grid[row][col] = 'M'
-    else:
-        print("Enemy Hit!")
-        player_grid[row][col] = 'X'
+    # Gameplay loop:
+    while True:
+        print_grid(enemy_grid)
+        player_move()
+        print_grid(enemy_grid)
+        
+        print_grid(player_grid)
+        enemy_move()
 
-while True:
-    player_move()
-    print_grid(enemy_grid)
-
-    enemy_move()
-    print_grid(player_grid)
+        if player_grid[row][col] == 'M':
+            break
 
 def main():
     random_row()
