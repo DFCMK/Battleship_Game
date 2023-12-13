@@ -31,16 +31,17 @@ def place_ship():
     is_vertical = random.choice([True, False])
 
     if is_vertical:
-        if row + size > GRID_SIZE:
-            return False
-
         for i in range(size):
+            if row + i >= GRID_SIZE:
+                return False
+                
             grid[row + i][col] = ship[0]
     else:
-        if col + size > GRID_SIZE:
-            return False
-
         for i in range(size):
+            if col + i > GRID_SIZE:
+                return False
+
+    
             grid[row][col + i] = ship[0]
 
     return True
@@ -62,13 +63,13 @@ def player_move():
 
     mark = enemy_grid[row][col]
 
-    if mark == 'X' or mark == '-':
+    if mark == 'X' or mark == 'M':
         print("You already struck here!")
         return
     
-    if mark == '-':
+    if mark == 'M':
         print("Arhh, you Missed!")
-        enemy_grid[row][col] = '-'
+        enemy_grid[row][col] = 'M'
         
     else:
         print("BOOOM, you got a HIT!!!")
