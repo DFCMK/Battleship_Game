@@ -45,9 +45,9 @@ def place_ship():
 
     return True
 
-    for ship, size in ship.items():
-        while True:
-            placed = place_ship(ship, size, grid)
+for ship, size in SHIPS.items():
+    while True:
+        placed = place_ship(ship, size, grid)
         if placed:
             break
 
