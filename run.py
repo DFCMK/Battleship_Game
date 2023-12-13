@@ -7,6 +7,8 @@ SHIPS = {"Destroyer": 2, "Submarine": 3, "Battleship": 4}
 
 player_grid = [["."] * GRID_SIZE for _ in range(GRID_SIZE)]
 
+enemy_grid = [["."] * GRID_SIZE for _ in range(GRID_SIZE)]
+
 def random_row():
     '''
     generate a random starting point for each ship.
@@ -19,7 +21,7 @@ def random_col():
     '''
     return random.randint(0, GRID_SIZE)
 
-def place_ship():
+def place_ship(grid):
     '''
     Handle positioning of a single ship.
     '''
@@ -50,7 +52,7 @@ def place_ship():
 
 for ship, size in SHIPS.items():
     while True:
-        placed = place_ship()
+        placed = place_ship(grid)
         if placed:
             break
 
@@ -58,11 +60,17 @@ def player_move():
     '''
     Takes in the target coordinates, checks the enemy grid for a hit or miss, then prints output and updates the grid cell.
     '''
-    print("Enter row and column to strike: ")
+    print("Enter coordinates to strike (e.g., A3): ")
 
-    row, col = input().split()
-    row, col = int(row), int(col)
+    # Get input as a string
+    coord = input().upper()
 
+    #convert the alphabetical part to numerical index
+    row = ord(coord[0]) - ord('A')
+
+    # convert numerical part to an integer
+    col = int(coord[1:]) - 1
+    
     mark = enemy_grid[row][col]
 
     if mark == 'X' or mark == 'M':
@@ -114,7 +122,8 @@ def print_grid(grid):
         print(' '.join(row))
 
 def main():
-    place_ship()
+    place_ship(player_grid)
+    place_ship(enemy_grid)
     player_move()
     enemy_move()
 main()
