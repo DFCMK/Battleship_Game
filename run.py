@@ -84,12 +84,12 @@ def enemy_move():
 
     mark = player_grid[row][col]
 
-    if mark == 'X' or mark == '-':
+    if mark == 'X' or mark == 'M':
         return
     
-    if mark == '-':
+    if mark == 'M':
         print("Enemy Missed!")
-        player_grid[row][col] = '-'
+        player_grid[row][col] = 'M'
     else:
         print("Enemy Hit!")
         player_grid[row][col] = 'X'
