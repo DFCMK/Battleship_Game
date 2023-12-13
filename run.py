@@ -1,7 +1,6 @@
 import random
-import time
 
-grid = ["." * 10] * 10
+grid = [["."] for in _ range(10)]
 
 GRID_SIZE = 10
 SHIPS = {"Destroyer": 2, "Submarine": 3, "Battleship": 4}
@@ -94,3 +93,17 @@ def enemy_move():
     else:
         print("Enemy Hit!")
         player_grid[row][col] = 'X'
+
+while True:
+    player_move()
+    print_grid(enemy_grid)
+
+    enemy_move()
+    print_grid(player_grid)
+
+def main():
+    random_row()
+    random_col()
+    place_ship()
+    player_move()
+    enemy_move()
