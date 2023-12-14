@@ -9,17 +9,18 @@ player_grid = [["."] * GRID_SIZE for _ in range(GRID_SIZE)]
 
 enemy_grid = [["."] * GRID_SIZE for _ in range(GRID_SIZE)]
 
+
 def random_row():
     '''
     generate a random starting point for each ship.
     '''
-    return random.randint(0, GRID_SIZE)
+    return random.randint(0, GRID_SIZE - 1)
 
 def random_col():
     '''
     generate a random starting point for each ship.
     '''
-    return random.randint(0, GRID_SIZE)
+    return random.randint(0, GRID_SIZE - 1)
 
 def place_ship(grid, ship, size):
     '''
@@ -52,6 +53,7 @@ for ship, size in SHIPS.items():
         if placed:
             break
 
+
 def player_move():
     '''
     Takes in the target coordinates, checks the enemy grid for a hit or miss, then prints output and updates the grid cell.
@@ -73,18 +75,16 @@ def player_move():
         print("You already struck here!")
         return
    
-    if mark == 'M':
+    if mark != 'B':
         print("Arhh, you Missed!")
         enemy_grid[row][col] = 'M'
-        player_grid[row][col] = 'M'
     
     else:
         print("BOOOM, you got a HIT!!!")
         enemy_grid[row][col] = 'X'
-        player_grid[row][col] = 'X'
 
     print("This is your Gameboard, with your own Ships!:\n")
-    print_grid(player_grid)
+    print_player_grid(player_grid)
 
     print("This is your enemies Gameboard which show you where you shoot already!:\n")
     print_grid(enemy_grid)
@@ -108,26 +108,41 @@ def enemy_move():
 
     mark = player_grid[row][col]
 
-    player_grid[row][col] = 'X'
+    if mark == 'B':
+        print("Computers move...\n")
+        print("Hit!\n")
+        player_grid[row][col] = 'X'
+        ships_remaining -= 1
+    else:
+        print("Computers move...\n")
+        print("Missed!\n")
+        player_grid[row][col] = 'M'
+        
 
     # Gameplay loop:
     while ships_remaining > 0:
-        print_grid(enemy_grid)
         player_move()
-        print_grid(enemy_grid)
         
         if player_grid[row][col] == 'X':
             ships_remaining -= 1
             
-            print_grid(player_grid)
+            print("Computer's move...\n")
+            print("Hit!\n")
             enemy_move()
 
 def print_grid(grid):
     '''
-    Display current state of the grid to the player
+    Display current state of the grid to the player and hide positioning of Ships from enemy and player Grid
     '''
     for row in grid:
-        print(' '.join('.' if cell == '.' or cell == 'X' else 'X' for cell in row))
+        print(' '.join('.' if cell == '.' or cell == 'X' or cell == 'B' else 'X' for cell in row))
+
+def print_player_grid(grid):
+    '''
+    Display current state of the player's grid to the player with also showing positioning of player ships
+    '''
+    for row in grid:
+        print(' '.join(row))
 
 def main():
     place_ship(player_grid, ship, size)
