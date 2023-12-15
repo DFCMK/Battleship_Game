@@ -147,6 +147,7 @@ def print_player_grid(grid):
 def main():
     place_ship(player_grid, ship, size)
     place_ship(enemy_grid, ship, size)
-    player_move()
-    enemy_move()
+    while sum(SHIPS.values()) > 0:
+        player_move()
+        enemy_move()
 main()
