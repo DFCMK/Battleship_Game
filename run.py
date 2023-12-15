@@ -116,15 +116,19 @@ def print_grid(grid):
     '''
     Display current state of the grid to the player and hide positioning of Ships from enemy and player Grid
     '''
-    for row in grid:
-        print(' '.join('.' if cell in ['S', 'D', 'B'] else cell for cell in row))
+    print(' ' + ' '.join(str(i + 1) for i in range(GRID_SIZE)))
+
+    for i, row in enumerate(grid):
+        print(chr(i + ord('A')) + ' ' + ' '.join('.' if cell in ['S', 'D', 'B'] else cell for cell in row))
 
 def print_player_grid(grid):
     '''
     Display current state of the player's grid to the player with also showing positioning of player ships
     '''
-    for row in grid:
-        print(' '.join(row))
+    print(' ' + ' '.join(str(i + 1) for i in range(GRID_SIZE)))
+
+    for i, row in enumerate(grid):
+        print(chr(i + ord('A')) + ' ' + ' '.join(row))
 
 def main():
 
