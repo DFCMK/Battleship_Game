@@ -47,13 +47,6 @@ def place_ship(grid, ship, size):
                 
     return True
 
-for ship, size in SHIPS.items():
-    while True:
-        placed = place_ship(grid, ship, size)
-        if placed:
-            break
-
-
 def player_move():
     '''
     Takes in the target coordinates, checks the enemy grid for a hit or miss, then prints output and updates the grid cell.
@@ -133,8 +126,17 @@ def print_player_grid(grid):
         print(' '.join(row))
 
 def main():
-    place_ship(player_grid, ship, size)
-    place_ship(enemy_grid, ship, size)
+    for ship, size in SHIPS.items():
+        while True:
+            placed = place_ship(player_grid, ship, size)
+            if placed:
+                break
+    for ship, size in SHIPS.items():
+        while True:
+            placed = place_ship(enemy_grid, ship, size)
+            if placed:
+                break
+                
     while sum(SHIPS.values()) > 0:
         player_move()
         enemy_move()
