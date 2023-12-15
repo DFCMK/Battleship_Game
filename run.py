@@ -32,7 +32,7 @@ def place_ship(grid, ship, size):
             return False
 
         for i in range(size):
-            if 0 <= row + i < GRID_SIZE and 0 <= col < GRID_SIZE and grid[row + i][col] != 'X':
+            if 0 <= row + i < GRID_SIZE and 0 <= col < GRID_SIZE and grid[row + i][col] not in ['S','D','B']:
                 grid[row + i][col] = ship[0]
             else:
                 return False
@@ -41,7 +41,7 @@ def place_ship(grid, ship, size):
             if col + size > GRID_SIZE:
                 return False
         for i in range(size):
-            if 0 <= row < GRID_SIZE and 0 <= col + i < GRID_SIZE and grid[row][col + i] != 'X':
+            if 0 <= row < GRID_SIZE and 0 <= col + i < GRID_SIZE and grid[row][col + i] not in ['S', 'D', 'B']:
                 grid[row][col + i] = ship[0]
             else:
                 return False              
@@ -117,7 +117,7 @@ def print_grid(grid):
     Display current state of the grid to the player and hide positioning of Ships from enemy and player Grid
     '''
     for row in grid:
-        print(' '.join('.' if cell == '.' or cell == 'X' or cell == 'B' else 'X' for cell in row))
+        print(' '.join('.' if cell in ['S', 'D', 'B'] else cell for cell in row))
 
 def print_player_grid(grid):
     '''
