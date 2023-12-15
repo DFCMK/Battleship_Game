@@ -117,18 +117,6 @@ def enemy_move():
         print("Computers move...\n")
         print("Missed!\n")
         player_grid[row][col] = 'M'
-        
-
-    # Gameplay loop:
-    while ships_remaining > 0:
-        player_move()
-        
-        if player_grid[row][col] == 'X':
-            ships_remaining -= 1
-            
-            print("Computer's move...\n")
-            print("Hit!\n")
-            enemy_move()
 
 def print_grid(grid):
     '''
