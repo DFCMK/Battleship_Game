@@ -2,53 +2,53 @@ import random
 
 grid = [["."] * 10 for row in range(10)]
 
-GRID_SIZE = 10
+#GRID_SIZE = 10
 SHIPS = {"Destroyer": 2, "Submarine": 3, "Battleship": 4}
 
-def random_row():
+def random_row(grid_size):
     '''
     generate a random starting point for each ship.
     '''
-    return random.randint(0, GRID_SIZE - 1)
+    return random.randint(0, grid_size - 1)
 
-def random_col():
+def random_col(grid_size):
     '''
     generate a random starting point for each ship.
     '''
-    return random.randint(0, GRID_SIZE - 1)
+    return random.randint(0, grid_size - 1)
 
-def place_ship(grid, ship, size):
+def place_ship(grid, ship, size, grid_size):
     '''
     Handle positioning of a single ship.
     '''
-    row = random_row()
-    col = random_col()
+    row = random_row(grid_size)
+    col = random_col(grid_size)
 
     # Randomly choose vertical or horizontal orientation
     is_vertical = random.choice([True, False])
 
     if is_vertical:
-        if row + size > GRID_SIZE:
+        if row + size > grid_size:
             return False
 
         for i in range(size):
-            if 0 <= row + i < GRID_SIZE and 0 <= col < GRID_SIZE and grid[row + i][col] not in ['S','D','B']:
+            if 0 <= row + i < grid_size and 0 <= col < grid_size and grid[row + i][col] not in ['S','D','B']:
                 grid[row + i][col] = ship[0]
             else:
                 return False
     else:
         for i in range(size):
-            if col + size > GRID_SIZE:
+            if col + size > grid_size:
                 return False
         for i in range(size):
-            if 0 <= row < GRID_SIZE and 0 <= col + i < GRID_SIZE and grid[row][col + i] not in ['S', 'D', 'B']:
+            if 0 <= row < grid_size and 0 <= col + i < grid_size and grid[row][col + i] not in ['S', 'D', 'B']:
                 grid[row][col + i] = ship[0]
             else:
                 return False              
     
     return True
 
-def player_move(player_grid, enemy_grid):
+def player_move(player_grid, enemy_grid, PLAYER_GRID_SIZE, ENEMY_GRID_SIZE):
     '''
     Takes in the target coordinates, checks the enemy grid for a hit or miss, then prints output and updates the grid cell.
     '''
@@ -78,10 +78,10 @@ def player_move(player_grid, enemy_grid):
         enemy_grid[row][col] = 'X'
 
     print("This is your Gameboard, with your own Ships!:\n")
-    print_player_grid(player_grid)
+    print_player_grid(player_grid, PLAYER_GRID_SIZE)
 
     print("This is your enemies Gameboard which show you where you shoot already!:\n")
-    print_grid(enemy_grid)
+    print_grid(enemy_grid, ENEMY_GRID_SIZE)
     
 
 def enemy_move(player_grid):
@@ -93,7 +93,7 @@ def enemy_move(player_grid):
 
     # Initial move selection loop:
     while True: 
-        row, col = random_row(), random_col()
+        row, col = random_row(ENEMY_GRID_SIZE), random_col(ENEMY_GRID_SIZE)
         
         if player_grid[row][col] == 'X' or player_grid[row][col] == 'M' or player_grid[row][col] in ['S', 'D', 'B']:
             continue
@@ -112,20 +112,20 @@ def enemy_move(player_grid):
         print("Missed!\n")
         player_grid[row][col] = 'M'
 
-def print_grid(grid):
+def print_grid(grid, grid_size):
     '''
     Display current state of the grid to the player and hide positioning of Ships from enemy and player Grid
     '''
-    print(' ' + ' '.join(str(i + 1) for i in range(GRID_SIZE)))
+    print(' ' + ' '.join(str(i + 1) for i in range(grid_size)))
 
     for i, row in enumerate(grid):
         print(chr(i + ord('A')) + ' ' + ' '.join('.' if cell in ['S', 'D', 'B'] else cell for cell in row))
 
-def print_player_grid(grid):
+def print_player_grid(grid, grid_size):
     '''
     Display current state of the player's grid to the player with also showing positioning of player ships
     '''
-    print(' ' + ' '.join(str(i + 1) for i in range(GRID_SIZE)))
+    print(' ' + ' '.join(str(i + 1) for i in range(grid_size)))
 
     for i, row in enumerate(grid):
         print(chr(i + ord('A')) + ' ' + ' '.join(row))
@@ -136,21 +136,21 @@ def main():
     PLAYER_GRID_SIZE = int(input("Enter the size of the player's grid (e.g. 10):\n"))
     ENEMY_GRID_SIZE = int(input("Enter the size of the enemies grid (e.g. 10):\n"))
 
-    player_grid = [['.' for _ in range(GRID_SIZE)] for _ in range(GRID_SIZE)]
-    enemy_grid = [['.' for _ in range(GRID_SIZE)] for _ in range(GRID_SIZE)]
+    player_grid = [['.' for _ in range(PLAYER_GRID_SIZE)] for _ in range(PLAYER_GRID_SIZE)]
+    enemy_grid = [['.' for _ in range(ENEMY_GRID_SIZE)] for _ in range(ENEMY_GRID_SIZE)]
 
     for ship, size in SHIPS.items():
         while True:
-            placed = place_ship(player_grid, ship, size)
+            placed = place_ship(player_grid, ship, size, PLAYER_GRID_SIZE)
             if placed:
                 break
     for ship, size in SHIPS.items():
         while True:
-            placed = place_ship(enemy_grid, ship, size)
+            placed = place_ship(enemy_grid, ship, size, ENEMY_GRID_SIZE)
             if placed:
                 break
                 
     while sum(SHIPS.values()) > 0:
-        player_move(player_grid, enemy_grid)
+        player_move(player_grid, enemy_grid, PLAYER_GRID_SIZE, ENEMY_GRID_SIZE)
         enemy_move(player_grid)
 main()
