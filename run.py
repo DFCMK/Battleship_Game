@@ -133,8 +133,19 @@ def print_player_grid(grid, grid_size):
 def main():
 
     # Let user adjust grid size
-    PLAYER_GRID_SIZE = int(input("Enter the size of the player's grid (e.g. 10):\n"))
-    ENEMY_GRID_SIZE = int(input("Enter the size of the enemies grid (e.g. 10):\n"))
+    while True:
+        PLAYER_GRID_SIZE = int(input("Enter the size of the player's grid (e.g. 10):\n"))
+        if 4 <= PLAYER_GRID_SIZE <= 26:
+            break
+        else:
+            print("Invalid size. Please enter a size between 4 and 26!")
+    
+    while True:
+        ENEMY_GRID_SIZE = int(input("Enter the size of the enemies grid (e.g. 10):\n"))
+        if 4 <= ENEMY_GRID_SIZE <= 26:
+            break
+        else:
+            print("Invalid size. Please enter a size between 4 and 26!")
 
     player_grid = [['.' for _ in range(PLAYER_GRID_SIZE)] for _ in range(PLAYER_GRID_SIZE)]
     enemy_grid = [['.' for _ in range(ENEMY_GRID_SIZE)] for _ in range(ENEMY_GRID_SIZE)]
