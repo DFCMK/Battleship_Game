@@ -166,8 +166,8 @@ def main():
     num_ships_enemy = {}
 
     for ship, _ in SHIPS.items():
-        num_player = int(input(f"Enter the number of {ship}s for the player: "))
-        num_enemy = int(input(f"Enter the number of {ship}s for the enemy: "))
+        num_player = int(input(f"Enter the number of {ship}s for the player:\n"))
+        num_enemy = int(input(f"Enter the number of {ship}s for the enemy:\n"))
         
         num_ships_player[ship] = num_player
         num_ships_enemy[ship] = num_enemy
