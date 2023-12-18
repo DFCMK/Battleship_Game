@@ -73,7 +73,7 @@ def player_move(player_grid, enemy_grid, PLAYER_GRID_SIZE, ENEMY_GRID_SIZE):
 
     # Convert the numerical part to an integer
     col = int(coord[1:]) - 1
-   
+    
     mark = enemy_grid[row][col]
 
     if mark == 'X' or mark == 'M':
@@ -82,7 +82,7 @@ def player_move(player_grid, enemy_grid, PLAYER_GRID_SIZE, ENEMY_GRID_SIZE):
    
     if mark[0] in ['S', 'D', 'B']:
         print("BOOOM, you got a Hit!!!\n")
-        enemy_grid[row][col] = 'X'
+        enemy_grid[row][col] = '@'
     
     else:
         print("Arhh, you Missed!\n")
@@ -106,9 +106,7 @@ def enemy_move(player_grid, ENEMY_GRID_SIZE):
     while True: 
         row, col = random_row(ENEMY_GRID_SIZE), random_col(ENEMY_GRID_SIZE)
         
-        if player_grid[row][col] == 'X' or player_grid[row][col] == 'M' or player_grid[row][col] in ['S', 'D', 'B']:
-            continue
-        else:
+        if player_grid[row][col] not in ['X', 'M']:
             break
 
     mark = player_grid[row][col]
@@ -116,30 +114,37 @@ def enemy_move(player_grid, ENEMY_GRID_SIZE):
     if mark[0] in ['S', 'D', 'B']:
         print("Computers move...\n")
         print("Hit!\n")
-        player_grid[row][col] = 'X'
+        player_grid[row][col] = '@'
         ships_remaining -= 1
     else:
         print("Computers move...\n")
         print("Missed!\n")
         player_grid[row][col] = 'M'
 
+    print_grid(player_grid, ENEMY_GRID_SIZE)
+
 def print_grid(grid, grid_size):
     '''
     Display current state of the grid to the player and hide positioning of Ships from enemy and player Grid
     '''
-    print(' ' + ' '.join(str(i + 1) for i in range(grid_size)))
+    print('  ' + ' '.join(str(i + 1) for i in range(grid_size)))
 
     for i, row in enumerate(grid):
-        print(chr(i + ord('A')) + ' ' + ' '.join('.' if cell in ['S', 'D', 'B'] else cell for cell in row))
+        print(' ' + '-' * (2 * grid_size + 1))
+        print(chr(i + ord('A')) + '|' + '|'.join('.' if cell in ['S', 'D', 'B'] else cell for cell in row) + '|')
+    print(' ' + '-' * (2 * grid_size + 1))
 
 def print_player_grid(grid, grid_size):
     '''
     Display current state of the player's grid to the player with also showing positioning of player ships
     '''
-    print(' ' + ' '.join(str(i + 1) for i in range(grid_size)))
+    print('  ' + ' '.join(str(i + 1) for i in range(grid_size)))
 
     for i, row in enumerate(grid):
-        print(chr(i + ord('A')) + ' ' + ' '.join(row))
+        print(' ' + '-' * (2 * grid_size + 1))
+        print(chr(i + ord('A')) + '|' + '|'.join(row) + '|')
+    print(' ' + '-' * (2 * grid_size + 1))
+
 
 def main():
     
