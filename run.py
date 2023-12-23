@@ -4,7 +4,7 @@ import random
 grid = [["."] * 10 for row in range(10)]
 
 GRID_SIZE = 10
-SHIPS = {"Carrier": 5, "Submarine": 3, "Battleship": 4}
+SHIPS = {"Carrier": 5, "Submarine": 3, "Battleship1": 4, "Battleship2": 4}
 
 def random_row(GRID_SIZE):
     '''
@@ -58,7 +58,7 @@ def place_ship(grid, ship, size, GRID_SIZE):
    return True
 
 
-def player_move(player_grid, enemy_grid, GRID_SIZE, print_moves):
+def player_move(player_grid, enemy_grid, GRID_SIZE, player_name):
     '''
     Takes in the target coordinates, checks the enemy grid for a hit or miss,
     then prints output and updates the grid cell.
@@ -74,33 +74,39 @@ def player_move(player_grid, enemy_grid, GRID_SIZE, print_moves):
     # Convert the numerical part to an integer
     col = int(coord[1:]) - 1
 
+    player_messages = []
     # Check if coordinates are within the valid range
     if 0 <= row < GRID_SIZE and 0 <= col < GRID_SIZE:
         mark = enemy_grid[row][col]
 
         if mark == 'X' or mark == 'M':
-            print_moves("You already struck here!")
+            player_messages.append("You already struck here!")
             return
 
         if mark[0] in ['S', 'D', 'B']:
-            print_moves("BOOOM, you got a Hit!!!")
+            player_messages.append("BOOOM, you got a Hit!!!")
             enemy_grid[row][col] = '@'
 
         else:
-            print_moves("Arhh, you Missed!")
+            player_messages.append("Arhh, you Missed!")
             enemy_grid[row][col] = 'X'
 
-        print("This is your Gameboard, with your own Ships!:\n")
+        print("\n")
+        print(f"This is {player_name}'s Gameboard, with your own Ships!:")
         print_player_grid(player_grid, GRID_SIZE)
 
         print_grid(enemy_grid, GRID_SIZE)
-        print("The Gameboard above is your opponent's Gameboard and shows where you shot already!\n")
+        print("The Gameboard above is your opponent's Gameboard and shows where you shot already!")
     
     else:
-        print_moves("You shot out of the range, please try again")
+        player_messages.append("You shot out of the range, please try again")
+    
+    print_moves(player_messages)
+
+    return player_messages
 
     
-def enemy_move(player_grid, GRID_SIZE, print_moves):
+def enemy_move(player_grid, GRID_SIZE):
     '''
     Takes in the target coordinates, checks the player grid for a hit or miss, then prints output and updates the grid cell.
     '''
@@ -114,17 +120,22 @@ def enemy_move(player_grid, GRID_SIZE, print_moves):
         if player_grid[row][col] not in ['X', 'M']:
             break
 
+    enemy_messages = []
     mark = player_grid[row][col]
 
     if mark[0] in ['S', 'D', 'B']:
-        print_moves("Computers move...")
-        print_moves("Hit!")
+        #enemy_messages.append("Computers move...")
+        enemy_messages.append("Hit!")
         player_grid[row][col] = '@'
         ships_remaining -= 1
     else:
-        print_moves("Computers move...")
-        print_moves("Missed!")
+        #enemy_messages.append("Computers move...")
+        enemy_messages.append("Missed!")
         player_grid[row][col] = 'M'
+
+    print_moves(enemy_messages)
+
+    return enemy_messages
 
 
 def print_grid(grid, GRID_SIZE):
@@ -157,17 +168,30 @@ def print_player_grid(grid, grid_size):
         print(chr(i + ord('A')) + '|' + '|'.join(row))
     print('-' + '-' * (2 * GRID_SIZE + 1))
 
-def print_moves(*messages):
+def print_moves(*args):
+    if len(args) >= 2:
+        player_name = args[0]
+        player_messages = args[1]
+        enemy_messages = args[2] if len(args) >= 3 else []
 
-    seperator = '-' * 25
-    
-    for message in messages:
-        print(message)
+        separator = '-' * 25
 
-    print(seperator)
+        print(separator)
+        print(f"{player_name}'s move:")
+        for message in player_messages:
+            print(message)
+
+        print(separator)
+
+        print("Enemy's Move:")
+        for message in enemy_messages:
+            print(message)
+
+        print(separator)
 
 def main():
     
+    player_name = input("Please Enter your name:\n")
     # Let the user adjust the grid size
     #while True:
         #PLAYER_GRID_SIZE = int(input("Enter the size of the player's grid (e.g., 10):\n"))
@@ -215,9 +239,11 @@ def main():
                     break
 
     while sum(SHIPS.values()) > 0:
-        player_move(player_grid, enemy_grid, GRID_SIZE, print_moves) 
-        enemy_move(enemy_grid, GRID_SIZE, print_moves)
+        player_messages = player_move(player_grid, enemy_grid, GRID_SIZE, player_name)
+        enemy_messages = enemy_move(enemy_grid, GRID_SIZE)
+
+        print_moves(player_name, player_messages, enemy_messages)
+
         #print('-' * (2 * GRID_SIZE + 1))  # Separator line
         #print_moves(player_move, enemy_move)
-
 main()
