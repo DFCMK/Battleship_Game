@@ -19,43 +19,44 @@ def random_col(GRID_SIZE):
     return random.randint(0, GRID_SIZE - 1)
 
 def place_ship(grid, ship, size, GRID_SIZE):
-   '''
-   Handle positioning of a single ship.
-   '''
-   row = random_row(GRID_SIZE)
-   col = random_col(GRID_SIZE)
+    '''
+    Handle positioning of a single ship.
+    '''
+    while True:
+        row = random_row(GRID_SIZE)
+        col = random_col(GRID_SIZE)
 
-   # Randomly choose vertical or horizontal orientation
-   is_vertical = random.choice([True, False])
+        # Randomly choose vertical or horizontal orientation
+        is_vertical = random.choice([True, False])
 
-   if is_vertical:
-       if row + size > GRID_SIZE:
-           return False
+        if is_vertical:
+            if row + size > GRID_SIZE:
+                continue
 
-       for i in range(size):
-           if ( 
-            0 <= row + i < GRID_SIZE
-            and 0 <= col < GRID_SIZE
-            and (grid[row + i][col] != '.' and grid[row + i][col] not in ['S', 'C','B'])):
-               return False
+            valid_position = all(
+                grid[row + i][col] == '.' for i in range(size)
+            )
+            if not valid_position:
+                continue
 
-       for i in range(size):
-           grid[row + i][col] = ship[0]
-   else:
-       if col + size > GRID_SIZE:
-           return False
+            for i in range(size):
+                grid[row + i][col] = ship[0]
+        else:
+            if col + size > GRID_SIZE:
+                continue
 
-       for i in range(size):
-           if (
-            0 <= row < GRID_SIZE
-            and 0 <= col + i < GRID_SIZE
-            and (grid[row][col + i] != '.' and grid[row][col + i] not in ['S', 'C','B'])):
-               return False
+            valid_position = all(
+                grid[row][col + i] == '.' for i in range(size)
+            )
+            if not valid_position:
+                continue
 
-       for i in range(size):
-           grid[row][col + i] = ship[0]
-   
-   return True
+            for i in range(size):
+                grid[row][col + i] = ship[0]
+
+        break
+
+    return True
 
 
 def player_move(player_grid, enemy_grid, GRID_SIZE, player_name):
@@ -225,18 +226,18 @@ def main():
     # Place ships on player's grid
     for ship, size in SHIPS.items():
         #for _ in range(size):
-            while True:
-                placed = place_ship(player_grid, ship, size, GRID_SIZE)
-                if placed:
-                    break
+        while True:
+            placed = place_ship(player_grid, ship, size, GRID_SIZE)
+            if placed:
+                break
         
     # Place ships on enemy's grid
     for ship, size in SHIPS.items():
         #for _ in range(size):
-            while True:
-                placed = place_ship(enemy_grid, ship, size, GRID_SIZE)
-                if placed:
-                    break
+        while True:
+            placed = place_ship(enemy_grid, ship, size, GRID_SIZE)
+            if placed:
+                break
 
     while sum(SHIPS.values()) > 0:
         player_messages = player_move(player_grid, enemy_grid, GRID_SIZE, player_name)
