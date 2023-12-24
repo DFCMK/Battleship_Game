@@ -6,6 +6,42 @@ grid = [["."] * 10 for row in range(10)]
 GRID_SIZE = 10
 SHIPS = {"Carrier": 5, "Submarine": 3, "Battleship1": 4, "Battleship2": 4}
 
+
+def display_game_info():
+    '''
+    Display general information about the Game
+    '''
+    # Define the box characters
+    horizontal_line = "-" * 79
+    vertical_line = "|"
+
+    # Top border of the box
+    print("+" + horizontal_line + "|")
+
+    # Content
+    print("|{:<79}|".format("BATTLESHIP GAME"))
+    print("|{:<79}|".format("Game Overview:"))
+    print("|{:<79}|".format("1. You find yourself in the midst of a naval battlefield on a 10x10 grid."))
+    print("|{:<79}|".format("2. Four enemy battleships of various lengths are hidden throughout the grid."))
+    print("|" + horizontal_line + "|")
+    print("|{:<79}|".format("Game Rules:"))
+    print("|{:<79}|".format("1. You can choose a target by specifying a row and column (e.g., A3)."))
+    print("|{:<79}|".format("2. Each shot will be displayed on the grid, indicating whether it hit or missed."))
+    print("|{:<79}|".format("3. Ships are oriented either horizontally or vertically, never diagonally."))
+    print("|{:<79}|".format("4. The grid legend includes symbols to represent empty space, ship parts,\n hit ship parts, and missed shots.\n"))
+    print("|" + horizontal_line + "|")
+    print("|{:<79}|".format("Legend:"))
+    print("|{:<79}|".format("1.'.': Empty space on the grid."))
+    print("|{:<79}".format("2.B (Battleship), S (Submarine), C (Carrier): \n These letters represent parts of every Ship type of an battleship.\n"))
+    print("|{:<79}|".format("3.@: Part of a battleship that was hit by a bullet."))
+    print("|{:<79}|".format("Your objective:"))
+    print("|{:<79}".format("Sink all the enemy battleships before your opponent is sinking all of yours to  secure victory!"))
+
+    # Bottom border of the box
+    print("+" + horizontal_line + "Game will start after entering a player name!\n")
+
+display_game_info()
+
 def random_row(GRID_SIZE):
     '''
     generate a random starting point for each ship.
@@ -205,7 +241,9 @@ def get_valid_player_name():
                 break
             
         else:
-            print(f"Welcome {player_name}!")
+            print('-' * (2 * GRID_SIZE + 1))
+            print(f"Welcome {player_name}, good Luck!")
+            print('-' * (2 * GRID_SIZE + 1))
             return player_name
 
 def main():
