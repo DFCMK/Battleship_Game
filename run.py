@@ -20,7 +20,8 @@ def random_col(GRID_SIZE):
 
 def place_ship(grid, ship, size, GRID_SIZE):
     '''
-    Handle positioning of a single ship.
+    Handle positioning of a single ship. while True loop keep trying until a valid position is found.
+    It checks for both the boundary and overlapping conditions before placing the ship.
     '''
     while True:
         row = random_row(GRID_SIZE)
@@ -190,9 +191,28 @@ def print_moves(*args):
 
         print(separator)
 
+def get_valid_player_name():
+    '''
+    Get and validate player name
+    '''
+
+    while True:
+        player_name = input("Please Enter your name:\n")
+
+        for char in player_name:
+            if not ('A' <= char <= 'Z' or 'a' <= char <= 'z'):
+                print("The entered name is not valid. Please enter a name using letters (e.g. Aa)")
+                break
+            
+        else:
+            print(f"Welcome {player_name}!")
+            return player_name
+
 def main():
     
-    player_name = input("Please Enter your name:\n")
+    player_name = get_valid_player_name()
+    #player_name = input("Please Enter your name:\n")
+
     # Let the user adjust the grid size
     #while True:
         #PLAYER_GRID_SIZE = int(input("Enter the size of the player's grid (e.g., 10):\n"))
