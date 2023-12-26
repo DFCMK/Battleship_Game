@@ -58,14 +58,14 @@ def random_col(GRID_SIZE, attacked_cols):
     if col not in attacked_cols:
         return col
 
-def place_ship(grid, ship, size, GRID_SIZE):
+def place_ship(grid, ship, size, GRID_SIZE, attacked_rows, attacked_cols):
     '''
     Handle positioning of a single ship. while True loop keep trying until a valid position is found.
     It checks for both the boundary and overlapping conditions before placing the ship.
     '''
     while True:
-        row = random_row(GRID_SIZE)
-        col = random_col(GRID_SIZE)
+        row = random_row(GRID_SIZE, attacked_rows)
+        col = random_col(GRID_SIZE, attacked_cols)
 
         # Randomly choose vertical or horizontal orientation
         is_vertical = random.choice([True, False])
