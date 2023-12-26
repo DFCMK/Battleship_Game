@@ -106,7 +106,6 @@ def player_move(enemy_grid, GRID_SIZE, attacked_rows, attacked_cols):
     Takes in the target coordinates, checks the enemy grid for a hit or miss,
     then prints output and updates the grid cell.
     '''
-
     while True:
         print("Enter coordinates to strike (e.g., A3): ")
 
@@ -123,38 +122,37 @@ def player_move(enemy_grid, GRID_SIZE, attacked_rows, attacked_cols):
 
         # Check if coordinates are within the valid range
         if 0 <= row < GRID_SIZE and 0 <= col < GRID_SIZE:
-
-            # Check if the coordinates have been guessed before
             if (row, col) in zip(attacked_rows, attacked_cols):
-                player_messages.append("You already struck here!")
-                print_moves(player_messages)
+                print("You already guessed these coordinates. Try again.")
                 continue
 
             mark = enemy_grid[row][col]
 
-            if mark[0] in ['S', 'C', 'B']:
+            if mark == 'X' or mark == '@':
+                player_messages.append("You already struck here!")
+                
+            elif mark[0] in ['S', 'C', 'B']:
                 player_messages.append("BOOOM, you got a Hit!!!")
                 enemy_grid[row][col] = '@'
-
             else:
                 player_messages.append("Arhh, you Missed!")
                 enemy_grid[row][col] = 'X'
 
-            # Update attacked_rows and attacked_cols
             attacked_rows.append(row)
             attacked_cols.append(col)
 
             # Print the enemy grid after player's move
-            print("This is your opponent's Gameboard with your shots!:")
-            print_grid(enemy_grid, GRID_SIZE)
-
-            break
+            print(f"This is De's Gameboard, with your own Ships!:")
+            print_player_grid(enemy_grid, GRID_SIZE)
+            break  # Print moves once after successful move
 
         else:
             player_messages.append("You shot out of the range, please try again")
-            print_moves(player_name, player_messages)
+            print_moves(player_messages)
 
+    print_moves(player_messages)
     return player_messages, attacked_rows, attacked_cols
+
 
     
 def enemy_move(player_grid, GRID_SIZE, attacked_rows, attacked_cols, player_name):
