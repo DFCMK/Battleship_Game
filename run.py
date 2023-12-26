@@ -45,17 +45,19 @@ def random_row(GRID_SIZE, attacked_rows):
     '''
     generate a random starting point for each ship.
     '''
-    row = random.randint(0, GRID_SIZE -1)
-    if row not in attacked_rows:
-        return row
+    while True:
+        row = random.randint(0, GRID_SIZE -1)
+        if row not in attacked_rows:
+            return row
 
 def random_col(GRID_SIZE, attacked_cols):
     '''
     generate a random starting point for each ship.
     '''
-    col = random.randint(0, GRID_SIZE -1)
-    if col not in attacked_cols:
-        return col
+    while True:
+        col = random.randint(0, GRID_SIZE -1)
+        if col not in attacked_cols:
+            return col
 
 def place_ship(grid, ship, size, GRID_SIZE, attacked_rows, attacked_cols):
     '''
@@ -98,47 +100,59 @@ def place_ship(grid, ship, size, GRID_SIZE, attacked_rows, attacked_cols):
 
     return True
 
+
 def player_move(enemy_grid, GRID_SIZE, attacked_rows, attacked_cols):
     '''
     Takes in the target coordinates, checks the enemy grid for a hit or miss,
     then prints output and updates the grid cell.
     '''
-    print("Enter coordinates to strike (e.g., A3): ")
 
-    # Get input as a string
-    coord = input().upper()
+    while True:
+        print("Enter coordinates to strike (e.g., A3): ")
 
-    # Convert the alphabetical part to a numerical index
-    row = ord(coord[0]) - ord('A')
+        # Get input as a string
+        coord = input().upper()
 
-    # Convert the numerical part to an integer
-    col = int(coord[1:]) - 1
+        # Convert the alphabetical part to a numerical index
+        row = ord(coord[0]) - ord('A')
 
-    player_messages = []
-    # Check if coordinates are within the valid range
-    if 0 <= row < GRID_SIZE and 0 <= col < GRID_SIZE:
-        mark = enemy_grid[row][col]
+        # Convert the numerical part to an integer
+        col = int(coord[1:]) - 1
 
-        if mark == 'X' or mark == '@':
-            player_messages.append("You already struck here!")
-            return
+        player_messages = []
 
-        if mark[0] in ['S', 'C', 'B']:
-            player_messages.append("BOOOM, you got a Hit!!!")
-            enemy_grid[row][col] = '@'
+        # Check if coordinates are within the valid range
+        if 0 <= row < GRID_SIZE and 0 <= col < GRID_SIZE:
+
+            # Check if the coordinates have been guessed before
+            if (row, col) in zip(attacked_rows, attacked_cols):
+                player_messages.append("You already struck here!")
+                print_moves(player_messages)
+                continue
+
+            mark = enemy_grid[row][col]
+
+            if mark[0] in ['S', 'C', 'B']:
+                player_messages.append("BOOOM, you got a Hit!!!")
+                enemy_grid[row][col] = '@'
+
+            else:
+                player_messages.append("Arhh, you Missed!")
+                enemy_grid[row][col] = 'X'
+
+            # Update attacked_rows and attacked_cols
+            attacked_rows.append(row)
+            attacked_cols.append(col)
+
+            # Print the enemy grid after player's move
+            print("This is your opponent's Gameboard with your shots!:")
+            print_grid(enemy_grid, GRID_SIZE)
+
+            break
 
         else:
-            player_messages.append("Arhh, you Missed!")
-            enemy_grid[row][col] = 'X'
-
-        # Print the enemy grid after player's move
-        print("This is your oppenent's Gameboard with your shots!:")
-        print_grid(enemy_grid, GRID_SIZE)
-            
-    else:
-        player_messages.append("You shot out of the range, please try again")
-    
-    print_moves(player_messages)
+            player_messages.append("You shot out of the range, please try again")
+            print_moves(player_name, player_messages)
 
     return player_messages, attacked_rows, attacked_cols
 
@@ -257,7 +271,6 @@ def main():
 
     # Place ships on player's grid
     for ship, size in SHIPS.items():
-        #for _ in range(size):
         while True:
             placed = place_ship(player_grid, ship, size, GRID_SIZE, attacked_rows, attacked_cols)
             if placed:
@@ -265,7 +278,6 @@ def main():
         
     # Place ships on enemy's grid
     for ship, size in SHIPS.items():
-        #for _ in range(size):
         while True:
             placed = place_ship(enemy_grid, ship, size, GRID_SIZE, attacked_rows, attacked_cols)
             if placed:
