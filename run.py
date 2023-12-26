@@ -128,19 +128,18 @@ def player_move(enemy_grid, GRID_SIZE, attacked_rows, attacked_cols):
         if mark[0] in ['S', 'C', 'B']:
             player_messages.append("BOOOM, you got a Hit!!!")
             enemy_grid[row][col] = '@'
-            player_grid[row][col] = '@'
 
         else:
             player_messages.append("Arhh, you Missed!") 
             enemy_grid[row][col] = 'X'
-            player_grid[row][col] = 'X'
 
-        print("\n")
-        print(f"This is {player_name}'s Gameboard, with your own Ships!:")
-        print_player_grid(player_grid, GRID_SIZE)
+        #print("\n")
+        #print(f"This is {player_name}'s Gameboard, with {player_name}'s Ships!:")
+        #print_player_grid(player_grid, GRID_SIZE)
 
-        #print_grid(enemy_grid, GRID_SIZE)
-        #print("The Gameboard above is your opponent's Gameboard and shows where you shot already!")
+        # Print the enemy grid after player's move
+        print("This is your oppenent's Gameboard with your shots!:")
+        print_grid(enemy_grid, GRID_SIZE)
     
     else:
         player_messages.append("You shot out of the range, please try again")
@@ -150,7 +149,7 @@ def player_move(enemy_grid, GRID_SIZE, attacked_rows, attacked_cols):
     return player_messages, attacked_rows, attacked_cols
 
     
-def enemy_move(player_grid, GRID_SIZE):
+def enemy_move(player_grid, GRID_SIZE, attacked_rows, attacked_cols, player_name):
     '''
     Takes in the target coordinates, checks the player grid for a hit or miss, then prints output and updates the grid cell.
     '''
