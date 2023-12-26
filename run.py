@@ -100,7 +100,7 @@ def place_ship(grid, ship, size, GRID_SIZE, attacked_rows, attacked_cols):
     return True
 
 
-def player_move(player_grid, enemy_grid, GRID_SIZE, player_name, player_messages):
+def player_move(enemy_grid, GRID_SIZE, attacked_rows, attacked_cols):
     '''
     Takes in the target coordinates, checks the enemy grid for a hit or miss,
     then prints output and updates the grid cell.
@@ -147,7 +147,7 @@ def player_move(player_grid, enemy_grid, GRID_SIZE, player_name, player_messages
     
     print_moves(player_messages)
 
-    return player_messages
+    return player_messages, attacked_rows, attacked_cols
 
     
 def enemy_move(player_grid, GRID_SIZE):
