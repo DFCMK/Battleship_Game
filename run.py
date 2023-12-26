@@ -1,6 +1,5 @@
 import random
 
-
 grid = [["."] * 10 for row in range(10)]
 
 GRID_SIZE = 10
@@ -44,7 +43,7 @@ display_game_info()
 
 def random_row(GRID_SIZE, attacked_rows):
     '''
-    generate a random starting point for each ship and keep track of attacked rows with writing them into a list.
+    generate a random starting point for each ship.
     '''
     row = random.randint(0, GRID_SIZE -1)
     if row not in attacked_rows:
@@ -52,7 +51,7 @@ def random_row(GRID_SIZE, attacked_rows):
 
 def random_col(GRID_SIZE, attacked_cols):
     '''
-    generate a random starting point for each ship and keep track of attacked cols with writing them into a list.
+    generate a random starting point for each ship.
     '''
     col = random.randint(0, GRID_SIZE -1)
     if col not in attacked_cols:
@@ -99,7 +98,6 @@ def place_ship(grid, ship, size, GRID_SIZE, attacked_rows, attacked_cols):
 
     return True
 
-
 def player_move(enemy_grid, GRID_SIZE, attacked_rows, attacked_cols):
     '''
     Takes in the target coordinates, checks the enemy grid for a hit or miss,
@@ -130,17 +128,13 @@ def player_move(enemy_grid, GRID_SIZE, attacked_rows, attacked_cols):
             enemy_grid[row][col] = '@'
 
         else:
-            player_messages.append("Arhh, you Missed!") 
+            player_messages.append("Arhh, you Missed!")
             enemy_grid[row][col] = 'X'
-
-        #print("\n")
-        #print(f"This is {player_name}'s Gameboard, with {player_name}'s Ships!:")
-        #print_player_grid(player_grid, GRID_SIZE)
 
         # Print the enemy grid after player's move
         print("This is your oppenent's Gameboard with your shots!:")
         print_grid(enemy_grid, GRID_SIZE)
-    
+            
     else:
         player_messages.append("You shot out of the range, please try again")
     
@@ -176,9 +170,9 @@ def enemy_move(player_grid, GRID_SIZE, attacked_rows, attacked_cols, player_name
         enemy_messages.append("Missed!")
         player_grid[row][col] = 'M'
 
+    # Print the player grid after enemy's move
     print_player_grid(player_grid, GRID_SIZE)
     print(f"The Gameboard above is {player_name}'s Gameboard, with {player_name}'s Ships!")
-    
     print_moves(enemy_messages)
 
     return enemy_messages
@@ -188,7 +182,7 @@ def print_grid(grid, GRID_SIZE):
     '''
     Display current state of the grid to the player and hide positioning of Ships from enemy and player Grid
     '''
-    print('  ' + ' '.join(str(i + 1) for i in range(GRID_SIZE)))
+    print(' ' + ' '.join(str(i + 1) for i in range(GRID_SIZE)))
     print(' ' + '-' * (2 * GRID_SIZE + 1))
 
     for i, row in enumerate(grid):
@@ -199,7 +193,7 @@ def print_grid(grid, GRID_SIZE):
         print(chr(i + ord('A')) + '|' + '|'.join(row) + '|') # delte this line after debugging
     print(' ' + '-' * (2 * GRID_SIZE + 1))
 
-def print_player_grid(grid, grid_size):
+def print_player_grid(grid, GRID_SIZE):
     '''
     Display current state of the player's grid to the player with also showing positioning of player ships
     '''
@@ -212,7 +206,7 @@ def print_player_grid(grid, grid_size):
         
         #display ships
         print(chr(i + ord('A')) + '|' + '|'.join(row))
-    print('-' + '-' * (2 * GRID_SIZE + 1))
+    print(' ' + '-' * (2 * GRID_SIZE + 1))
 
 def print_moves(*args):
     if len(args) >= 2:
@@ -273,9 +267,10 @@ def main():
             #break
         #else:
             #print("Invalid size. Please enter a size between 4 and 26!")
-
-    player_grid = [['.' for _ in range(GRID_SIZE)] for _ in range(GRID_SIZE)]
-    enemy_grid = [['.' for _ in range(GRID_SIZE)] for _ in range(GRID_SIZE)]
+    
+    # Reset Grids at start of each round
+    player_grid = [['.'] * GRID_SIZE for _ in range(GRID_SIZE)]
+    enemy_grid = [['.'] * GRID_SIZE for _ in range(GRID_SIZE)]
 
     # Get the number of ships for each type from the user for both player and enemy
     #num_ships_player = {}
@@ -290,7 +285,7 @@ def main():
 
     attacked_rows = []
     attacked_cols = []
-    
+
     # Place ships on player's grid
     for ship, size in SHIPS.items():
         #for _ in range(size):
@@ -306,10 +301,10 @@ def main():
             placed = place_ship(enemy_grid, ship, size, GRID_SIZE, attacked_rows, attacked_cols)
             if placed:
                 break
-
+    
     while True: # Game loop
         player_messages, attacked_rows, attacked_cols = player_move(enemy_grid, GRID_SIZE, attacked_rows, attacked_cols)
-        
+         
         enemy_messages = enemy_move(player_grid, GRID_SIZE, attacked_rows, attacked_cols, player_name)
 
         print_moves(player_name, player_messages, enemy_messages)
