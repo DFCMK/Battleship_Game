@@ -186,11 +186,8 @@ def print_grid(grid, GRID_SIZE):
     print(' ' + '-' * (2 * GRID_SIZE + 1))
 
     for i, row in enumerate(grid):
-        #print(' ' + '-' * (2 * GRID_SIZE + 1))
-
         # Hide Ships
-        #print(chr(i + ord('A')) + '|' + '|'.join('.' if cell in ['S', 'D', 'B'] else cell for cell in row) + '|')
-        print(chr(i + ord('A')) + '|' + '|'.join(row) + '|') # delte this line after debugging
+        print(chr(i + ord('A')) + '|' + '|'.join('.' if cell in ['S', 'D', 'B'] else cell for cell in row) + '|')
     print(' ' + '-' * (2 * GRID_SIZE + 1))
 
 def print_player_grid(grid, GRID_SIZE):
@@ -202,7 +199,6 @@ def print_player_grid(grid, GRID_SIZE):
 
 
     for i, row in enumerate(grid):
-        #print(' ' + '-' * (2 * GRID_SIZE + 1))
         
         #display ships
         print(chr(i + ord('A')) + '|' + '|'.join(row))
@@ -251,37 +247,10 @@ def get_valid_player_name():
 def main():
     
     player_name = get_valid_player_name()
-    #player_name = input("Please Enter your name:\n")
-
-    # Let the user adjust the grid size
-    #while True:
-        #PLAYER_GRID_SIZE = int(input("Enter the size of the player's grid (e.g., 10):\n"))
-        #if 4 <= PLAYER_GRID_SIZE <= 26:
-            #break
-        #else:
-            #print("Invalid size. Please enter a size between 4 and 26!")
-
-    #while True:
-        #ENEMY_GRID_SIZE = int(input("Enter the size of the enemy's grid (e.g., 10):\n"))
-        #if 4 <= ENEMY_GRID_SIZE <= 26:
-            #break
-        #else:
-            #print("Invalid size. Please enter a size between 4 and 26!")
     
     # Reset Grids at start of each round
     player_grid = [['.'] * GRID_SIZE for _ in range(GRID_SIZE)]
     enemy_grid = [['.'] * GRID_SIZE for _ in range(GRID_SIZE)]
-
-    # Get the number of ships for each type from the user for both player and enemy
-    #num_ships_player = {}
-    #num_ships_enemy = {}
-
-    #for ship, _ in SHIPS.items():
-        #num_player = int(input(f"Enter the number of {ship}s for the player:\n"))
-        #num_enemy = int(input(f"Enter the number of {ship}s for the enemy:\n"))
-        
-        #num_ships_player[ship] = num_player
-        #num_ships_enemy[ship] = num_enemy
 
     attacked_rows = []
     attacked_cols = []
