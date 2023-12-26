@@ -158,7 +158,7 @@ def enemy_move(player_grid, GRID_SIZE, attacked_rows, attacked_cols, player_name
 
     # Initial move selection loop:
     while True: 
-        row, col = random_row(GRID_SIZE), random_col(GRID_SIZE)
+        row, col = random_row(GRID_SIZE, attacked_rows), random_col(GRID_SIZE, attacked_cols)
         
         if player_grid[row][col] not in ['M', '@']:
             break
@@ -176,8 +176,8 @@ def enemy_move(player_grid, GRID_SIZE, attacked_rows, attacked_cols, player_name
         enemy_messages.append("Missed!")
         player_grid[row][col] = 'M'
 
-    print_grid(enemy_grid, GRID_SIZE)
-    print("The Gameboard above is your opponent's Gameboard and shows where you shot already!")
+    print_player_grid(player_grid, GRID_SIZE)
+    print(f"The Gameboard above is {player_name}'s Gameboard, with {player_name}'s Ships!")
     
     print_moves(enemy_messages)
 
@@ -295,7 +295,7 @@ def main():
     for ship, size in SHIPS.items():
         #for _ in range(size):
         while True:
-            placed = place_ship(player_grid, ship, size, GRID_SIZE)
+            placed = place_ship(player_grid, ship, size, GRID_SIZE, attacked_rows, attacked_cols)
             if placed:
                 break
         
@@ -303,7 +303,7 @@ def main():
     for ship, size in SHIPS.items():
         #for _ in range(size):
         while True:
-            placed = place_ship(enemy_grid, ship, size, GRID_SIZE)
+            placed = place_ship(enemy_grid, ship, size, GRID_SIZE, attacked_rows, attacked_cols)
             if placed:
                 break
 
