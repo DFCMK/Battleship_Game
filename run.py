@@ -288,6 +288,8 @@ def main():
         #num_ships_player[ship] = num_player
         #num_ships_enemy[ship] = num_enemy
 
+    attacked_rows = []
+    attacked_cols = []
     
     # Place ships on player's grid
     for ship, size in SHIPS.items():
@@ -305,12 +307,17 @@ def main():
             if placed:
                 break
 
-    while sum(SHIPS.values()) > 0:
-        player_messages = player_move(player_grid, enemy_grid, GRID_SIZE, player_name)
-        enemy_messages = enemy_move(enemy_grid, GRID_SIZE)
+    while True: # Game loop
+        player_messages, attacked_rows, attacked_cols = player_move(enemy_grid, GRID_SIZE, attacked_rows, attacked_cols)
+        
+        enemy_messages = enemy_move(player_grid, GRID_SIZE, attacked_rows, attacked_cols, player_name)
 
         print_moves(player_name, player_messages, enemy_messages)
 
-        #print('-' * (2 * GRID_SIZE + 1))  # Separator line
-        #print_moves(player_move, enemy_move)
+        if not player_messages and not enemy_messages:
+            break
+
+    while sum(SHIPS.values()) == 0:
+        print("All ships have been sunk. Congratualtions!")
+        break
 main()
