@@ -42,17 +42,21 @@ def display_game_info():
 
 display_game_info()
 
-def random_row(GRID_SIZE):
+def random_row(GRID_SIZE, attacked_rows):
     '''
-    generate a random starting point for each ship.
+    generate a random starting point for each ship and keep track of attacked rows with writing them into a list.
     '''
-    return random.randint(0, GRID_SIZE - 1)
+    row = random.randint(0, GRID_SIZE -1)
+    if row not in attacked_rows:
+        return row
 
-def random_col(GRID_SIZE):
+def random_col(GRID_SIZE, attacked_cols):
     '''
-    generate a random starting point for each ship.
+    generate a random starting point for each ship and keep track of attacked cols with writing them into a list.
     '''
-    return random.randint(0, GRID_SIZE - 1)
+    col = random.randint(0, GRID_SIZE -1)
+    if col not in attacked_cols:
+        return col
 
 def place_ship(grid, ship, size, GRID_SIZE):
     '''
@@ -96,7 +100,7 @@ def place_ship(grid, ship, size, GRID_SIZE):
     return True
 
 
-def player_move(player_grid, enemy_grid, GRID_SIZE, player_name):
+def player_move(player_grid, enemy_grid, GRID_SIZE, player_name, player_messages):
     '''
     Takes in the target coordinates, checks the enemy grid for a hit or miss,
     then prints output and updates the grid cell.
@@ -117,24 +121,26 @@ def player_move(player_grid, enemy_grid, GRID_SIZE, player_name):
     if 0 <= row < GRID_SIZE and 0 <= col < GRID_SIZE:
         mark = enemy_grid[row][col]
 
-        if mark == 'X' or mark == 'M':
+        if mark == 'X' or mark == '@':
             player_messages.append("You already struck here!")
             return
 
-        if mark[0] in ['S', 'D', 'B']:
+        if mark[0] in ['S', 'C', 'B']:
             player_messages.append("BOOOM, you got a Hit!!!")
             enemy_grid[row][col] = '@'
+            player_grid[row][col] = '@'
 
         else:
-            player_messages.append("Arhh, you Missed!")
+            player_messages.append("Arhh, you Missed!") 
             enemy_grid[row][col] = 'X'
+            player_grid[row][col] = 'X'
 
         print("\n")
         print(f"This is {player_name}'s Gameboard, with your own Ships!:")
         print_player_grid(player_grid, GRID_SIZE)
 
-        print_grid(enemy_grid, GRID_SIZE)
-        print("The Gameboard above is your opponent's Gameboard and shows where you shot already!")
+        #print_grid(enemy_grid, GRID_SIZE)
+        #print("The Gameboard above is your opponent's Gameboard and shows where you shot already!")
     
     else:
         player_messages.append("You shot out of the range, please try again")
@@ -155,13 +161,13 @@ def enemy_move(player_grid, GRID_SIZE):
     while True: 
         row, col = random_row(GRID_SIZE), random_col(GRID_SIZE)
         
-        if player_grid[row][col] not in ['X', 'M']:
+        if player_grid[row][col] not in ['M', '@']:
             break
 
     enemy_messages = []
     mark = player_grid[row][col]
 
-    if mark[0] in ['S', 'D', 'B']:
+    if mark[0] in ['S', 'C', 'B']:
         #enemy_messages.append("Computers move...")
         enemy_messages.append("Hit!")
         player_grid[row][col] = '@'
@@ -171,6 +177,9 @@ def enemy_move(player_grid, GRID_SIZE):
         enemy_messages.append("Missed!")
         player_grid[row][col] = 'M'
 
+    print_grid(enemy_grid, GRID_SIZE)
+    print("The Gameboard above is your opponent's Gameboard and shows where you shot already!")
+    
     print_moves(enemy_messages)
 
     return enemy_messages
