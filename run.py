@@ -61,29 +61,16 @@ def random_col(GRID_SIZE, attacked_cols):
 
 def place_ship(grid, ship, size, GRID_SIZE, attacked_rows, attacked_cols):
     '''
-    Handle positioning of a single ship. while True loop keep trying until a valid position is found.
-    It checks for both the boundary and overlapping conditions before placing the ship.
+    Place a ship on the grid in a random direction (horizontal, vertical, or diagonal).
     '''
     while True:
         row = random_row(GRID_SIZE, attacked_rows)
         col = random_col(GRID_SIZE, attacked_cols)
 
-        # Randomly choose vertical or horizontal orientation
-        is_vertical = random.choice([True, False])
+        # Randomly choose direction (horizontal, vertical, or diagonal)
+        direction = random.choice(['horizontal', 'vertical', 'diagonal'])
 
-        if is_vertical:
-            if row + size > GRID_SIZE:
-                continue
-
-            valid_position = all(
-                grid[row + i][col] == '.' for i in range(size)
-            )
-            if not valid_position:
-                continue
-
-            for i in range(size):
-                grid[row + i][col] = ship[0]
-        else:
+        if direction == 'horizontal':
             if col + size > GRID_SIZE:
                 continue
 
@@ -96,12 +83,44 @@ def place_ship(grid, ship, size, GRID_SIZE, attacked_rows, attacked_cols):
             for i in range(size):
                 grid[row][col + i] = ship[0]
 
+        elif direction == 'vertical':
+            if row + size > GRID_SIZE:
+                continue
+
+            valid_position = all(
+                grid[row + i][col] == '.' for i in range(size)
+            )
+            if not valid_position:
+                continue
+
+            for i in range(size):
+                grid[row + i][col] = ship[0]
+
+        elif direction == 'diagonal':
+            if row + size > GRID_SIZE or col + size > GRID_SIZE:
+                continue
+
+            valid_position = all(
+                grid[row + i][col + i] == '.' for i in range(size)
+            )
+            if not valid_position:
+                continue
+
+            for i in range(size):
+                grid[row + i][col + i] = ship[0]
+
         break
 
     return True
 
 
+
 def player_move(enemy_grid, GRID_SIZE, attacked_rows, attacked_cols):
+    '''
+    Handle player's move, displaying a hit with '@' and a miss with a 'X' on the opponent's grid. 
+    It also give user the option to exit the game at any time by entering the 'exit' command.
+    Additionally, it handles two-digit coordinate inputs like A10.
+    '''
     while True:
         print("Enter coordinates to strike (e.g., A3): ")
 
