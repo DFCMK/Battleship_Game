@@ -102,21 +102,33 @@ def place_ship(grid, ship, size, GRID_SIZE, attacked_rows, attacked_cols):
 
 
 def player_move(enemy_grid, GRID_SIZE, attacked_rows, attacked_cols):
-    '''
-    Takes in the target coordinates, checks the enemy grid for a hit or miss,
-    then prints output and updates the grid cell.
-    '''
     while True:
         print("Enter coordinates to strike (e.g., A3): ")
 
         # Get input as a string
         coord = input().upper()
 
-        # Convert the alphabetical part to a numerical index
-        row = ord(coord[0]) - ord('A')
+        # Validate the input format
+        if len(coord) >= 2 and 'A' <= coord[0] <= 'J':
+            try:
+                # Convert the alphabetical part to a numerical index
+                row = ord(coord[0]) - ord('A')
 
-        # Convert the numerical part to an integer
-        col = int(coord[1:]) - 1
+                # Convert the numerical part to an integer
+                col = int(coord[1:]) - 1
+
+                # Validate the column range
+                if 0 <= col < GRID_SIZE:
+                    pass
+                else:
+                    print("Invalid column. Please enter coordinates in the format A1 to J10.")
+                    continue
+            except ValueError:
+                print("Invalid input. Please enter coordinates in the format A1 to J10.")
+                continue
+        else:
+            print("Invalid input. Please enter coordinates in the format A1 to J10.")
+            continue
 
         player_messages = []
 
@@ -130,21 +142,25 @@ def player_move(enemy_grid, GRID_SIZE, attacked_rows, attacked_cols):
 
             if mark == 'X' or mark == '@':
                 player_messages.append("You already struck here!")
-                
+
             elif mark[0] in ['S', 'C', 'B']:
                 player_messages.append("BOOOM, you got a Hit!!!")
                 enemy_grid[row][col] = '@'
+
+                attacked_rows.append(row)
+                attacked_cols.append(col)
+
             else:
                 player_messages.append("Arhh, you Missed!")
                 enemy_grid[row][col] = 'X'
 
-            attacked_rows.append(row)
-            attacked_cols.append(col)
+                attacked_rows.append(row)
+                attacked_cols.append(col)
 
-            # Print the enemy grid after player's move
+            # Print the enemy grid after the player's move
             print(f"This is De's Gameboard, with your own Ships!:")
-            print_player_grid(enemy_grid, GRID_SIZE)
-            break  # Print moves once after successful move
+            print_grid(enemy_grid, GRID_SIZE)
+            break  # Exit the loop after a successful move
 
         else:
             player_messages.append("You shot out of the range, please try again")
@@ -182,6 +198,11 @@ def enemy_move(player_grid, GRID_SIZE, attacked_rows, attacked_cols, player_name
         enemy_messages.append("Missed!")
         player_grid[row][col] = 'M'
 
+    # Check if all enemy ships have been sunk
+    if ships_remaining == 0:
+        print(f"{player_name} has sunk all enemy ships! {player_name} wins!")
+        return None
+
     # Print the player grid after enemy's move
     print_player_grid(player_grid, GRID_SIZE)
     print(f"The Gameboard above is {player_name}'s Gameboard, with {player_name}'s Ships!")
@@ -199,7 +220,7 @@ def print_grid(grid, GRID_SIZE):
 
     for i, row in enumerate(grid):
         # Hide Ships
-        print(chr(i + ord('A')) + '|' + '|'.join('.' if cell in ['S', 'D', 'B'] else cell for cell in row) + '|')
+        print(chr(i + ord('A')) + '|' + '|'.join('.' if cell in ['S', 'C', 'B'] else cell for cell in row) + '|')
     print(' ' + '-' * (2 * GRID_SIZE + 1))
 
 def print_player_grid(grid, GRID_SIZE):
@@ -210,11 +231,10 @@ def print_player_grid(grid, GRID_SIZE):
     print(' ' + '-' * (2 * GRID_SIZE + 1))
 
 
-    for i, row in enumerate(grid):
-        
+    for i, row in enumerate(grid):   
         #display ships
         print(chr(i + ord('A')) + '|' + '|'.join(row))
-    print(' ' + '-' * (2 * GRID_SIZE + 1))
+    print(' ' + '-' * (4 * GRID_SIZE + 1))
 
 def print_moves(*args):
     if len(args) >= 2:
@@ -251,9 +271,9 @@ def get_valid_player_name():
                 break
             
         else:
-            print('-' * (2 * GRID_SIZE + 1))
+            print('-' * (4 * GRID_SIZE + 1))
             print(f"Welcome {player_name}, good Luck!")
-            print('-' * (2 * GRID_SIZE + 1))
+            print('-' * (4 * GRID_SIZE + 1))
             return player_name
 
 def main():
@@ -280,13 +300,24 @@ def main():
             placed = place_ship(enemy_grid, ship, size, GRID_SIZE, attacked_rows, attacked_cols)
             if placed:
                 break
-    
+
+
+    print("Ships placed, Starting the game!", flush=True)
+    print('-' * (4 * GRID_SIZE + 1))
+
     while True: # Game loop
         player_messages, attacked_rows, attacked_cols = player_move(enemy_grid, GRID_SIZE, attacked_rows, attacked_cols)
-         
         enemy_messages = enemy_move(player_grid, GRID_SIZE, attacked_rows, attacked_cols, player_name)
 
+        # If enemy_messages is None, the game has ended
+        if enemy_messages is None:
+            break
+
         print_moves(player_name, player_messages, enemy_messages)
+
+        # Check if all cells have been hit
+        if len(set(attacked_rows)) == GRID_SIZE and len(set(attacked_cols)) == GRID_SIZE:
+            break
 
         if not player_messages and not enemy_messages:
             break
