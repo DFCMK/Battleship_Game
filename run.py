@@ -108,6 +108,10 @@ def player_move(enemy_grid, GRID_SIZE, attacked_rows, attacked_cols):
         # Get input as a string
         coord = input().upper()
 
+        if coord.lower() == "exit":
+            print("Exiting the game. Goodbye!")
+            return [], attacked_rows, attacked_cols
+
         # Validate the input format
         if len(coord) >= 2 and 'A' <= coord[0] <= 'J':
             try:
