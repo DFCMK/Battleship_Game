@@ -198,33 +198,40 @@ def enemy_move(player_grid, GRID_SIZE, attacked_rows, attacked_cols, player_name
     '''
     Takes in the target coordinates, checks the player grid for a hit or miss, then prints output and updates the grid cell.
     '''
-    
+
+    # Check if all enemy ships have been sunk
     ships_remaining = sum(SHIPS.values())
+    if ships_remaining == 0:
+        print(f"{player_name} has sunk all enemy ships! {player_name} wins!")
+        return None
 
     # Initial move selection loop:
-    while True: 
-        row, col = random_row(GRID_SIZE, attacked_rows), random_col(GRID_SIZE, attacked_cols)
-        
-        if player_grid[row][col] not in ['M', '@']:
-            break
+    while True:
+        # Check if all rows have been hit
+        if set(attacked_rows) == set(range(GRID_SIZE)):
+            print("All rows have been hit. The computer is unable to make a move.")
+            return None
+
+        row = random.choice([r for r in range(GRID_SIZE) if r not in attacked_rows])
+
+        col = random.randint(0, GRID_SIZE - 1)
+
+        # Check if the selected cell has already been hit
+        if (row, col) in zip(attacked_rows, attacked_cols):
+            continue
+
+        break
 
     enemy_messages = []
     mark = player_grid[row][col]
 
     if mark[0] in ['S', 'C', 'B']:
-        #enemy_messages.append("Computers move...")
         enemy_messages.append("Hit!")
         player_grid[row][col] = '@'
         ships_remaining -= 1
     else:
-        #enemy_messages.append("Computers move...")
         enemy_messages.append("Missed!")
         player_grid[row][col] = 'M'
-
-    # Check if all enemy ships have been sunk
-    if ships_remaining == 0:
-        print(f"{player_name} has sunk all enemy ships! {player_name} wins!")
-        return None
 
     # Print the player grid after enemy's move
     print_player_grid(player_grid, GRID_SIZE)
@@ -256,7 +263,7 @@ def print_player_grid(grid, GRID_SIZE):
 
     for i, row in enumerate(grid):   
         #display ships
-        print(chr(i + ord('A')) + '|' + '|'.join(row))
+        print(chr(i + ord('A')) + '|' + '|'.join(row)+ '|')
     print(' ' + '-' * (4 * GRID_SIZE + 1))
 
 def print_moves(*args):
@@ -299,11 +306,12 @@ def get_valid_player_name():
             print('-' * (4 * GRID_SIZE + 1))
             return player_name
 
+# ... (previous code)
+
 def main():
-    
     player_name = get_valid_player_name()
-    
-    # Reset Grids at start of each round
+
+    # Reset Grids at the start of each round
     player_grid = [['.'] * GRID_SIZE for _ in range(GRID_SIZE)]
     enemy_grid = [['.'] * GRID_SIZE for _ in range(GRID_SIZE)]
 
@@ -316,20 +324,24 @@ def main():
             placed = place_ship(player_grid, ship, size, GRID_SIZE, attacked_rows, attacked_cols)
             if placed:
                 break
-        
-    # Place ships on enemy's grid
+
+    # Place ships on the enemy's grid
     for ship, size in SHIPS.items():
         while True:
             placed = place_ship(enemy_grid, ship, size, GRID_SIZE, attacked_rows, attacked_cols)
             if placed:
                 break
 
-
-    print("Ships placed, Starting the game!", flush=True)
+    print("Ships placed, starting the game!", flush=True)
     print('-' * (4 * GRID_SIZE + 1))
 
-    while True: # Game loop
+    while True:  # Game loop
         player_messages, attacked_rows, attacked_cols = player_move(enemy_grid, GRID_SIZE, attacked_rows, attacked_cols)
+
+        # Check if player_move returned None (indicating the game should end)
+        if player_messages is None:
+            break
+
         enemy_messages = enemy_move(player_grid, GRID_SIZE, attacked_rows, attacked_cols, player_name)
 
         # If enemy_messages is None, the game has ended
@@ -346,6 +358,7 @@ def main():
             break
 
     while sum(SHIPS.values()) == 0:
-        print("All ships have been sunk. Congratualtions!")
+        print("All ships have been sunk. Congratulations!")
         break
+
 main()
