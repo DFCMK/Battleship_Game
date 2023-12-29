@@ -114,7 +114,6 @@ def place_ship(grid, ship, size, GRID_SIZE, attacked_rows, attacked_cols):
     return True
 
 
-
 def player_move(enemy_grid, GRID_SIZE, attacked_rows, attacked_cols):
     '''
     Handle player's move, displaying a hit with '@' and a miss with a 'X' on the opponent's grid. 
@@ -133,10 +132,9 @@ def player_move(enemy_grid, GRID_SIZE, attacked_rows, attacked_cols):
 
         # Validate the input format
         if len(coord) >= 2 and 'A' <= coord[0] <= 'J':
+            # Convert the alphabetical part to a numerical index
+            row = ord(coord[0]) - ord('A')
             try:
-                # Convert the alphabetical part to a numerical index
-                row = ord(coord[0]) - ord('A')
-
                 # Convert the numerical part to an integer
                 col = int(coord[1:]) - 1
 
@@ -163,7 +161,7 @@ def player_move(enemy_grid, GRID_SIZE, attacked_rows, attacked_cols):
 
             mark = enemy_grid[row][col]
 
-            if mark == 'X' or mark == '@':
+            if mark in ['X', '@']:
                 player_messages.append("You already struck here!")
 
             elif mark[0] in ['S', 'C', 'B']:
@@ -207,13 +205,16 @@ def enemy_move(player_grid, GRID_SIZE, attacked_rows, attacked_cols, player_name
 
     # Initial move selection loop:
     while True:
-        # Check if all rows have been hit
-        if set(attacked_rows) == set(range(GRID_SIZE)):
+        if len(set(attacked_rows)) == GRID_SIZE:
             print("All rows have been hit. The computer is unable to make a move.")
+            return None
+        
+        available_rows = [r for r in range(GRID_SIZE) if r not in attacked_rows]
+        if not available_rows:
+            print("No avaolable rows to attack. The computer is unable to make a move.")
             return None
 
         row = random.choice([r for r in range(GRID_SIZE) if r not in attacked_rows])
-
         col = random.randint(0, GRID_SIZE - 1)
 
         # Check if the selected cell has already been hit
@@ -305,8 +306,6 @@ def get_valid_player_name():
             print(f"Welcome {player_name}, good Luck!")
             print('-' * (4 * GRID_SIZE + 1))
             return player_name
-
-# ... (previous code)
 
 def main():
     player_name = get_valid_player_name()
