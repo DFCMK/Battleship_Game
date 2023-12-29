@@ -307,6 +307,34 @@ def get_valid_player_name():
             print('-' * (4 * GRID_SIZE + 1))
             return player_name
 
+def play_game(player_grid, enemy_grid, GRID_SIZE, attacked_rows, attacked_cols, player_name):
+    '''
+    Handle Game play logic within a game loop
+    '''
+    # Game loop
+    while True:
+        player_messages, attacked_rows, attacked_cols = player_move(enemy_grid, GRID_SIZE, attacked_rows, attacked_cols)
+
+        # Check if player_move returned None (indicating the game should end)
+        if player_messages is None:
+            break
+
+        enemy_messages = enemy_move(player_grid, GRID_SIZE, attacked_rows, attacked_cols, player_name)
+
+        # If enemy_messages is None, the game has ended
+        if enemy_messages is None:
+            break
+
+        print_moves(player_name, player_messages, enemy_messages)
+
+        # Check if all cells have been hit
+        #if len(set(attacked_rows)) == GRID_SIZE and len(set(attacked_cols)) == GRID_SIZE:
+            #break
+
+        if not player_messages and not enemy_messages:
+            break
+    print("Game over!")
+
 def main():
     player_name = get_valid_player_name()
 
@@ -334,28 +362,9 @@ def main():
     print("Ships placed, starting the game!", flush=True)
     print('-' * (4 * GRID_SIZE + 1))
 
-    while True:  # Game loop
-        player_messages, attacked_rows, attacked_cols = player_move(enemy_grid, GRID_SIZE, attacked_rows, attacked_cols)
+    play_game(player_grid, enemy_grid, GRID_SIZE, attacked_rows, attacked_cols, player_name)
 
-        # Check if player_move returned None (indicating the game should end)
-        if player_messages is None:
-            break
-
-        enemy_messages = enemy_move(player_grid, GRID_SIZE, attacked_rows, attacked_cols, player_name)
-
-        # If enemy_messages is None, the game has ended
-        if enemy_messages is None:
-            break
-
-        print_moves(player_name, player_messages, enemy_messages)
-
-        # Check if all cells have been hit
-        if len(set(attacked_rows)) == GRID_SIZE and len(set(attacked_cols)) == GRID_SIZE:
-            break
-
-        if not player_messages and not enemy_messages:
-            break
-
+    # Check if all ships have been sunk
     while sum(SHIPS.values()) == 0:
         print("All ships have been sunk. Congratulations!")
         break
