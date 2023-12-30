@@ -245,6 +245,11 @@ To summarize, the above-described approach resolved most of the issues except fo
 
 ## Deployment
 
+# IMPORTANT Heroku Deployment about this project:
+- **Note**:
+This Project got Deployed to Heroku with a empty requirements.txt file because the Deployment failed every time when it tried to get Deployed with a requirements.txt file containing the required Dependencies. 
+The Game got Tested over several Devices on Heroku and the Program was running as Expected. 
+
 #### Deploy to <a href="www.heroku.com">Heroku</a>:
 <!--Adjust here with rewriting the steps -->
 1. Ensure your requirements.txt file has the required dependencies. To do this you can use the following code in your IDE:
