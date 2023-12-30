@@ -250,7 +250,7 @@ To summarize, the above-described approach resolved most of the issues except fo
 This Project got Deployed to Heroku with a empty requirements.txt file because the Deployment failed every time when it tried to get Deployed with a requirements.txt file containing the required Dependencies. 
 The Game got Tested over several Devices on Heroku and the Program was running as Expected. 
 
-#### Deploy to <a href="www.heroku.com">Heroku</a>:
+#### Deploy to <a href="https://www.heroku.com/">Heroku</a>:
 
 1. Ensure your requirements.txt file has the required dependencies. To do this you can use the following code in your IDE:
    - <p dir="auto">pip3 freeze &gt; requirements.txt</p>
@@ -329,7 +329,7 @@ To create a local clone of this project:
 
 5. Run the command git clone YOUR_COPIED_URL FOLDER_NAME (you want to save your copied repository to).
 
-<!--README done till this comment-->
+
 ## Credits
 
    ### Code: 
