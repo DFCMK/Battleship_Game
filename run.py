@@ -1,8 +1,8 @@
 import random
 
-grid = [["."] * 10 for row in range(10)]
+grid = [["."] * 11 for row in range(11)]
 
-GRID_SIZE = 10
+GRID_SIZE = 11
 SHIPS = {"Carrier": 5, "Submarine": 3, "Battleship1": 4, "Battleship2": 4}
 
 
@@ -46,7 +46,7 @@ def random_row(GRID_SIZE, attacked_rows):
     generate a random starting point for each ship.
     '''
     while True:
-        row = random.randint(0, GRID_SIZE -1)
+        row = random.randint(0, GRID_SIZE -2)
         if row not in attacked_rows:
             return row
 
@@ -55,28 +55,24 @@ def random_col(GRID_SIZE, attacked_cols):
     generate a random starting point for each ship.
     '''
     while True:
-        col = random.randint(0, GRID_SIZE -1)
+        col = random.randint(0, GRID_SIZE -2)
         if col not in attacked_cols:
             return col
 
-def place_ship(grid, ship, size, GRID_SIZE, attacked_rows, attacked_cols):
-    '''
-    Place a ship on the grid in a random direction (horizontal, vertical, or diagonal).
-    '''
+def place_ship(grid, ship, size, GRID_SIZE, attacked_cells):
     while True:
-        row = random_row(GRID_SIZE, attacked_rows)
-        col = random_col(GRID_SIZE, attacked_cols)
+        row = random_row(GRID_SIZE, attacked_cells)
+        col = random_col(GRID_SIZE, attacked_cells)
+
+        # Ensure that the ship is not placed in the last column and row
+        if col + size > GRID_SIZE or row + size > GRID_SIZE or col + size == GRID_SIZE or row + size == GRID_SIZE:
+            continue
 
         # Randomly choose direction (horizontal, vertical, or diagonal)
         direction = random.choice(['horizontal', 'vertical', 'diagonal'])
 
         if direction == 'horizontal':
-            if col + size > GRID_SIZE:
-                continue
-
-            valid_position = all(
-                grid[row][col + i] == '.' for i in range(size)
-            )
+            valid_position = all(grid[row][col + i] == '.' for i in range(size))
             if not valid_position:
                 continue
 
@@ -84,12 +80,7 @@ def place_ship(grid, ship, size, GRID_SIZE, attacked_rows, attacked_cols):
                 grid[row][col + i] = ship[0]
 
         elif direction == 'vertical':
-            if row + size > GRID_SIZE:
-                continue
-
-            valid_position = all(
-                grid[row + i][col] == '.' for i in range(size)
-            )
+            valid_position = all(grid[row + i][col] == '.' for i in range(size))
             if not valid_position:
                 continue
 
@@ -97,12 +88,7 @@ def place_ship(grid, ship, size, GRID_SIZE, attacked_rows, attacked_cols):
                 grid[row + i][col] = ship[0]
 
         elif direction == 'diagonal':
-            if row + size > GRID_SIZE or col + size > GRID_SIZE:
-                continue
-
-            valid_position = all(
-                grid[row + i][col + i] == '.' for i in range(size)
-            )
+            valid_position = all(grid[row + i][col + i] == '.' for i in range(size))
             if not valid_position:
                 continue
 
@@ -114,7 +100,7 @@ def place_ship(grid, ship, size, GRID_SIZE, attacked_rows, attacked_cols):
     return True
 
 
-def player_move(enemy_grid, GRID_SIZE, attacked_rows, attacked_cols):
+def player_move(enemy_grid, GRID_SIZE, attacked_cells):
     '''
     Handle player's move, displaying a hit with '@' and a miss with a 'X' on the opponent's grid. 
     It also give user the option to exit the game at any time by entering the 'exit' command.
@@ -131,10 +117,10 @@ def player_move(enemy_grid, GRID_SIZE, attacked_rows, attacked_cols):
             exit()
 
         # Validate the input format
-        if len(coord) >= 2 and 'A' <= coord[0] <= 'J':
+        if len(coord) >= 2 and 'A' <= coord[0] <= 'K':
             # Convert the alphabetical part to a numerical index
             row = ord(coord[0]) - ord('A')
-            try:
+            try:     
                 # Convert the numerical part to an integer
                 col = int(coord[1:]) - 1
 
@@ -155,7 +141,7 @@ def player_move(enemy_grid, GRID_SIZE, attacked_rows, attacked_cols):
 
         # Check if coordinates are within the valid range
         if 0 <= row < GRID_SIZE and 0 <= col < GRID_SIZE:
-            if (row, col) in zip(attacked_rows, attacked_cols):
+            if (row, col, "player") in attacked_cells:
                 print("You already guessed these coordinates. Try again.")
                 continue
 
@@ -168,31 +154,28 @@ def player_move(enemy_grid, GRID_SIZE, attacked_rows, attacked_cols):
                 player_messages.append("BOOOM, you got a Hit!!!")
                 enemy_grid[row][col] = '@'
 
-                attacked_rows.append(row)
-                attacked_cols.append(col)
+                attacked_cells.append((row, col, "player"))
 
             else:
                 player_messages.append("Arhh, you Missed!")
                 enemy_grid[row][col] = 'X'
 
-                attacked_rows.append(row)
-                attacked_cols.append(col)
+                attacked_cells.append((row, col, "player"))
 
             # Print the enemy grid after the player's move
-            print(f"This is De's Gameboard, with your own Ships!:")
+            print('-' * (4 * GRID_SIZE + 1))
+            print(f"This is the computer's Grid, with your own shots!:")
             print_grid(enemy_grid, GRID_SIZE)
-            break  # Exit the loop after a successful move
+            break 
 
         else:
             player_messages.append("You shot out of the range, please try again")
             print_moves(player_messages)
 
     print_moves(player_messages)
-    return player_messages, attacked_rows, attacked_cols
-
-
-    
-def enemy_move(player_grid, GRID_SIZE, attacked_rows, attacked_cols, player_name):
+    return player_messages, attacked_cells
+   
+def enemy_move(player_grid, GRID_SIZE, attacked_cells, player_name):
     '''
     Takes in the target coordinates, checks the player grid for a hit or miss, then prints output and updates the grid cell.
     '''
@@ -203,22 +186,24 @@ def enemy_move(player_grid, GRID_SIZE, attacked_rows, attacked_cols, player_name
         print(f"{player_name} has sunk all enemy ships! {player_name} wins!")
         return None
 
+    # Check if all rows have been hit by the player
+    if all(row in [cell[0] for cell in attacked_cells if cell[2] == "player"] for row in range(GRID_SIZE)):
+        print("All rows have been hit. The computer is unable to make a move.")
+        return None
+
     # Initial move selection loop:
     while True:
-        if len(set(attacked_rows)) == GRID_SIZE:
-            print("All rows have been hit. The computer is unable to make a move.")
-            return None
         
-        available_rows = [r for r in range(GRID_SIZE) if r not in attacked_rows]
-        if not available_rows:
-            print("No avaolable rows to attack. The computer is unable to make a move.")
+        available_cells = [(r, c) for r in range(GRID_SIZE) for c in range(GRID_SIZE) if (r, c, "enemy") not in attacked_cells]
+        if not available_cells:
+            print("No available rows to attack. The computer is unable to make a move.")
             return None
 
-        row = random.choice([r for r in range(GRID_SIZE) if r not in attacked_rows])
-        col = random.randint(0, GRID_SIZE - 1)
+        row, col = random.choice(available_cells)
 
         # Check if the selected cell has already been hit
-        if (row, col) in zip(attacked_rows, attacked_cols):
+        if (row, col, "enemy") in [(cell[0], cell[1], cell[2]) for cell in attacked_cells]:
+            print(f"Cell ({row}, {col}) already attacked. Skipping.")
             continue
 
         break
@@ -230,13 +215,19 @@ def enemy_move(player_grid, GRID_SIZE, attacked_rows, attacked_cols, player_name
         enemy_messages.append("Hit!")
         player_grid[row][col] = '@'
         ships_remaining -= 1
+
     else:
         enemy_messages.append("Missed!")
         player_grid[row][col] = 'M'
 
+
+    # Update attacked rows and cols for enemy move
+    attacked_cells.append((row, col, "enemy"))
+
     # Print the player grid after enemy's move
     print_player_grid(player_grid, GRID_SIZE)
-    print(f"The Gameboard above is {player_name}'s Gameboard, with {player_name}'s Ships!")
+    print(f"The Grid above is {player_name}'s Gameboard, with {player_name}'s Ships!")
+    print('-' * (2 * GRID_SIZE + 1))
     print_moves(enemy_messages)
 
     return enemy_messages
@@ -246,28 +237,31 @@ def print_grid(grid, GRID_SIZE):
     '''
     Display current state of the grid to the player and hide positioning of Ships from enemy and player Grid
     '''
-    print(' ' + ' '.join(str(i + 1) for i in range(GRID_SIZE)))
-    print(' ' + '-' * (2 * GRID_SIZE + 1))
+    print(' ' + ' '.join(str(i) for i in range(1, GRID_SIZE)))
+    print(' ' + '-' * (2 * GRID_SIZE - 1))
 
-    for i, row in enumerate(grid):
+    for i, row in enumerate(grid[:-1]):
         # Hide Ships
-        print(chr(i + ord('A')) + '|' + '|'.join('.' if cell in ['S', 'C', 'B'] else cell for cell in row) + '|')
-    print(' ' + '-' * (2 * GRID_SIZE + 1))
+        print(chr(i + ord('A')) + '|' + '|'.join(row[:-1]) + '|')
+    print(' ' + '-' * (2 * GRID_SIZE - 1))
 
 def print_player_grid(grid, GRID_SIZE):
     '''
     Display current state of the player's grid to the player with also showing positioning of player ships
     '''
-    print(' ' + ' '.join(str(i + 1) for i in range(GRID_SIZE)))
-    print(' ' + '-' * (2 * GRID_SIZE + 1))
+    print(' ' + ' '.join(str(i) for i in range(1, GRID_SIZE)))
+    print(' ' + '-' * (2 * GRID_SIZE - 1))
 
+    for i, row in enumerate(grid[:-1]):
+        # Display ships
+        print(chr(i + ord('A')) + '|' + '|'.join(row[:-1]) + '|')
+    print(' ' + '-' * (2 * GRID_SIZE - 1))
 
-    for i, row in enumerate(grid):   
-        #display ships
-        print(chr(i + ord('A')) + '|' + '|'.join(row)+ '|')
-    print(' ' + '-' * (4 * GRID_SIZE + 1))
 
 def print_moves(*args):
+    '''
+    This function prints enemy's and player's move to terminal seperated by a seperator line.
+    '''
     if len(args) >= 2:
         player_name = args[0]
         player_messages = args[1]
@@ -275,7 +269,7 @@ def print_moves(*args):
 
         separator = '-' * 25
 
-        print(separator)
+        #print(separator)
         print(f"{player_name}'s move:")
         for message in player_messages:
             print(message)
@@ -292,7 +286,6 @@ def get_valid_player_name():
     '''
     Get and validate player name
     '''
-
     while True:
         player_name = input("Please Enter your name:\n")
 
@@ -307,66 +300,85 @@ def get_valid_player_name():
             print('-' * (4 * GRID_SIZE + 1))
             return player_name
 
-def play_game(player_grid, enemy_grid, GRID_SIZE, attacked_rows, attacked_cols, player_name):
+def play_game(player_grid, enemy_grid, GRID_SIZE, attacked_cells, player_name):
     '''
-    Handle Game play logic within a game loop
+    Contains main Game Loop.
+    It is responsible for checking if all ships on the enemy's and player's Grid got sunk and if all cells got hit.  
     '''
-    # Game loop
-    while True:
-        player_messages, attacked_rows, attacked_cols = player_move(enemy_grid, GRID_SIZE, attacked_rows, attacked_cols)
+    game_over = False
 
-        # Check if player_move returned None (indicating the game should end)
-        if player_messages is None:
+    while not game_over:
+        player_messages, attacked_cells = player_move(enemy_grid, GRID_SIZE, attacked_cells)
+        
+        # Check if all player ships have been sunk
+        if all(player_grid[row][col] == '@' for row in range(GRID_SIZE) for col in range(GRID_SIZE) if player_grid[row][col][0] in ['S', 'C', 'B']):
+            print("All ship parts have been hit. The game is over!")
+            game_over = True
             break
 
-        enemy_messages = enemy_move(player_grid, GRID_SIZE, attacked_rows, attacked_cols, player_name)
 
-        # If enemy_messages is None, the game has ended
+        # Check if all rows have been hit by the player
+        if all(row in [cell[0] for cell in attacked_cells if cell[2] == "player"] for row in range(GRID_SIZE)):
+            print(f"All player ships have been sunk. The computer wins!")
+            game_over = True
+            break
+
+        # Check if all ship parts have been hit by the enemy
+        if all(enemy_grid[row][col] == '@' for row in range(GRID_SIZE) for col in range(GRID_SIZE) if enemy_grid[row][col][0] in ['S', 'C', 'B']):
+            print(f"All enemy ships have been sunk. {player_name} wins!")
+            game_over = True
+            break
+
+        enemy_messages = enemy_move(player_grid, GRID_SIZE, attacked_cells, player_name)
+
+        # Check if enemy_move returned None (indicating the game should end)
         if enemy_messages is None:
+            game_over = True
             break
 
         print_moves(player_name, player_messages, enemy_messages)
 
         # Check if all cells have been hit
-        #if len(set(attacked_rows)) == GRID_SIZE and len(set(attacked_cols)) == GRID_SIZE:
-            #break
+        if all((row, col) in [(cell[0], cell[1]) for cell in attacked_cells if cell[2] == "enemy"] for row in range(GRID_SIZE) for col in range(GRID_SIZE)):
+            print("All cells have been hit. The game is over!")
+            game_over = True
+            break
 
         if not player_messages and not enemy_messages:
+            game_over = True
             break
+
     print("Game over!")
+
 
 def main():
     player_name = get_valid_player_name()
 
-    # Reset Grids at the start of each round
-    player_grid = [['.'] * GRID_SIZE for _ in range(GRID_SIZE)]
-    enemy_grid = [['.'] * GRID_SIZE for _ in range(GRID_SIZE)]
+    attacked_cells = []
 
-    attacked_rows = []
-    attacked_cols = []
+    # Reset player Grid at the start of each round
+    player_grid = [['.'] * GRID_SIZE for _ in range(GRID_SIZE)]
 
     # Place ships on player's grid
     for ship, size in SHIPS.items():
         while True:
-            placed = place_ship(player_grid, ship, size, GRID_SIZE, attacked_rows, attacked_cols)
+            placed = place_ship(player_grid, ship, size, GRID_SIZE, attacked_cells)
             if placed:
                 break
+
+    # Reset enemy Grid at the start of each round
+    enemy_grid = [['.'] * GRID_SIZE for _ in range(GRID_SIZE)]
 
     # Place ships on the enemy's grid
     for ship, size in SHIPS.items():
         while True:
-            placed = place_ship(enemy_grid, ship, size, GRID_SIZE, attacked_rows, attacked_cols)
+            placed = place_ship(enemy_grid, ship, size, GRID_SIZE, attacked_cells)
             if placed:
                 break
 
     print("Ships placed, starting the game!", flush=True)
     print('-' * (4 * GRID_SIZE + 1))
 
-    play_game(player_grid, enemy_grid, GRID_SIZE, attacked_rows, attacked_cols, player_name)
-
-    # Check if all ships have been sunk
-    while sum(SHIPS.values()) == 0:
-        print("All ships have been sunk. Congratulations!")
-        break
+    play_game(player_grid, enemy_grid, GRID_SIZE, attacked_cells, player_name)
 
 main()
