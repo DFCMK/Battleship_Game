@@ -3,7 +3,7 @@
 The Battleship Game is a classic strategy and guessing game where you find yourself in the midst of a 10x10 grid, taking place in a Terminal.
 Your mission is to locate and sink four enemy battleships hidden throughout the grid. Engage in a strategic one-player battle against the computer and try to secure victory.
 
-Are you ready to give it a try? <a href="https://dfcmk.github.io/Quiz-Game/">Battleship Game</a>
+Are you ready to give it a try? <a href="https://battleship-game800-ac274e926044.herokuapp.com/">Battleship Game</a>
 
 ## Table of Content
 
@@ -179,7 +179,7 @@ Potential future features could include allowing the user to choose the number o
 
 ## Technologies Used
 
-- <a href="https://html.spec.whatwg.org/" rel="nofollow">Python</a>: primary language of the application.
+- <a href="https://github.com/DFCMK/Battleship_Game/blob/main/run.py" rel="nofollow">Python</a>: primary language of the application.
 
 - <a href="https://github.com/" rel="nofollow">Github</a>:  to host the repositories.
 
@@ -251,7 +251,7 @@ This Project got Deployed to Heroku with a empty requirements.txt file because t
 The Game got Tested over several Devices on Heroku and the Program was running as Expected. 
 
 #### Deploy to <a href="www.heroku.com">Heroku</a>:
-<!--Adjust here with rewriting the steps -->
+
 1. Ensure your requirements.txt file has the required dependencies. To do this you can use the following code in your IDE:
    - <p dir="auto">pip3 freeze &gt; requirements.txt</p>
    -  Heroku will use this file to import the dependencies that are required. 
@@ -302,7 +302,6 @@ To get to the live link of the Battelship Application on Heroku - click here: <a
 ![Deploy section](./images/deploy.png "Deploy section")
 
 
-<!--README done till this comment-->
 #### Fork the respository on Github:
 
 A GitHub Repository can be forked to create a copy that can be viewed and modified without impacting the original repository.
@@ -332,26 +331,6 @@ To create a local clone of this project:
 
 <!--README done till this comment-->
 ## Credits
-
-  ### Content:
-
-   - The icons are sourced from <a href="https://fontawesome.com/search?q=swi&o=r&m=free">Font Awesome</a>
-   - The background image on the homepage is obtained from <a href="https://pixabay.com/illustrations/question-mark-why-question-5475172/"> pixaby</a>
-   - The quiz is based on <a href="https://www.youtube.com/watch?v=riDzcEQbX6k">Web Dev Simplified</a> tutorial video. 
-   - Audio elements were implemented using <a href="https://www.learningguild.com/articles/coding-sound-with-javascript-beginner-s-guide/">Mark Lassoff article</a> as a guideline and where downloaded from <a href="https://pixabay.com/sound-effects/search/quiz/">pixaby</a>
-
-   - The score area is inspired by the <a href="https://github.com/DFCMK/Love-Maths/blob/main/index.html">Love Math project</a>
-
-   - The progress bar was built with the <a href="https://www.w3schools.com/howto/howto_js_progressbar.asp">w3schools tutorial</a>
-
-   <a href="#table-of-content">Back to top</a>
-   
-   ### Media:
-   - The audio files for Gamesound, Wrongsound, and Correctsound were obtained from <a href="https://pixabay.com/sound-effects/search/quiz/">pixaby</a>
-   
-   - The background image on the homepage also came from  <a href="https://pixabay.com/illustrations/question-mark-why-question-5475172/"> pixaby</a>
-
-   <a href="#table-of-content">Back to top</a>
 
    ### Code: 
 
