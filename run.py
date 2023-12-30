@@ -218,7 +218,7 @@ def enemy_move(player_grid, GRID_SIZE, attacked_cells, player_name):
 
     else:
         enemy_messages.append("Missed!")
-        player_grid[row][col] = 'M'
+        player_grid[row][col] = 'X'
 
 
     # Update attacked rows and cols for enemy move
@@ -242,7 +242,7 @@ def print_grid(grid, GRID_SIZE):
 
     for i, row in enumerate(grid[:-1]):
         # Hide Ships
-        print(chr(i + ord('A')) + '|' + '|'.join(row[:-1]) + '|')
+        print(chr(i + ord('A')) + '|' + '|'.join('.' if cell in ['S', 'C', 'B'] else cell for cell in row) + '|')
     print(' ' + '-' * (2 * GRID_SIZE - 1))
 
 def print_player_grid(grid, GRID_SIZE):
