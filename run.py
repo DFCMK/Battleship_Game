@@ -242,7 +242,7 @@ def print_grid(grid, GRID_SIZE):
 
     for i, row in enumerate(grid[:-1]):
         # Hide Ships
-        print(chr(i + ord('A')) + '|' + '|'.join('.' if cell in ['S', 'C', 'B'] else cell for cell in row) + '|')
+        print(chr(i + ord('A')) + '|' + '|'.join('.' if cell in ['S', 'C', 'B'] else cell for cell in row[:-1]) + '|')
     print(' ' + '-' * (2 * GRID_SIZE - 1))
 
 def print_player_grid(grid, GRID_SIZE):
