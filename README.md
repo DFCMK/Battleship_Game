@@ -117,7 +117,8 @@ For a visual representation refer to the screenshot below:
 ## Features:
 
 ### Existing Features:
-  #### Grid Display:
+
+#### Grid Display:
   - Player's grid and opponent's grid are presented.
   - Player's ships are visible on their grid.
   - Letters and numbers above columns and rows for easy reference.
@@ -147,7 +148,7 @@ For a visual representation refer to the screenshot below:
 
   <a href="#table-of-content">Back to top</a>
 
-  #### Game Introduction:
+#### Game Introduction:
 - Brief introduction to the game and its rules for the user:
 
   ![Game introduction](./images/game-introduction1.png "Game introduction")
@@ -156,14 +157,14 @@ For a visual representation refer to the screenshot below:
 
 
 
-  #### Exit Option: 
+#### Exit Option: 
 - Users can exit the game at any time using a designated command:
 
   ![Exit](./images/exit-command.png "Exit")
 
   <a href="#table-of-content">Back to top</a>
 
-  #### Player Interaction and Playername: 
+#### Player Interaction and Playername: 
 
 ![Player name and interaction](./images/playername-coord.png "Player name and interaction")
   
